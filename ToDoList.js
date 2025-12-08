@@ -228,7 +228,7 @@ function openDetailsModal(id) {
         const isOverdue = dueDate < today && !task.completed;
         let dateTimeText = formatFullDate(task.dueDate);
         if (task.dueTime) {
-            dateTimeText = formatDateWithTime(task.dueDate, task.dueTime);
+            dateTimeText += ` <i class="fas fa-clock"></i> ${task.dueTime}`;
         }
         dueDateEl.innerHTML = `<span class="${isOverdue ? 'overdue-text' : ''}">${dateTimeText}</span>`;
     } else {
@@ -280,7 +280,7 @@ function closeDetailsModal() {
 }
 
 function editFromDetails() {
-    closeDetailsModal();
+    elements.detailsModal.classList.remove('active');
     openEditModal(editingTaskId);
 }
 
@@ -294,6 +294,7 @@ function openEditModal(id) {
     document.getElementById('editPrioritySelect').value = task.priority;
     document.getElementById('editDueDateInput').value = task.dueDate || '';
     document.getElementById('editDueTimeInput').value = task.dueTime || '';
+    document.getElementById('editCategorySelect').value = task.category || 'all';
     
     elements.editModal.classList.add('active');
 }
@@ -318,6 +319,7 @@ function saveEditTask() {
     task.priority = document.getElementById('editPrioritySelect').value;
     task.dueDate = document.getElementById('editDueDateInput').value;
     task.dueTime = document.getElementById('editDueTimeInput').value;
+    task.category = document.getElementById('editCategorySelect').value;
 
     saveToLocalStorage();
     renderTasks();
@@ -402,7 +404,7 @@ function createTaskElement(task) {
         
         let dateTimeText = formatDate(task.dueDate);
         if (task.dueTime) {
-            dateTimeText += ` at ${task.dueTime}`;
+            dateTimeText += ` <i class="fas fa-clock"></i> ${task.dueTime}`;
         }
         
         dueDateSpan.innerHTML = `<i class="fas fa-calendar"></i> ${dateTimeText}`;
@@ -760,11 +762,22 @@ function renderCategories() {
 
     // Update category select
     elements.categorySelect.innerHTML = '<option value="all">No Project</option>';
+    const editCategorySelect = document.getElementById('editCategorySelect');
+    if (editCategorySelect) {
+        editCategorySelect.innerHTML = '<option value="all">No Project</option>';
+    }
     categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category.id;
         option.textContent = category.name;
         elements.categorySelect.appendChild(option);
+        
+        if (editCategorySelect) {
+            const editOption = document.createElement('option');
+            editOption.value = category.id;
+            editOption.textContent = category.name;
+            editCategorySelect.appendChild(editOption);
+        }
     });
     
     // Update scroll arrows visibility
@@ -1392,9 +1405,7 @@ function formatFullDate(dateString) {
     const options = { 
         year: 'numeric', 
         month: 'long', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+        day: 'numeric'
     };
     return date.toLocaleDateString('en-US', options);
 }
