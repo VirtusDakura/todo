@@ -43,7 +43,7 @@
                 <div class="mobile-menu-drawer" id="mobileMenuDrawer">
                     <div class="mobile-menu-header">
                         <h3>Menu</h3>
-                        <button class="close-menu-btn" id="closeMenuBtn">
+                        <button class="close-menu-btn" id="closeMenuBtn" title="Close Menu">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -90,21 +90,36 @@
 
             <!-- Categories/Projects -->
             <div class="categories-section">
-                <div class="categories-header">
-                    <div class="projects-dropdown" id="projectsDropdown">
-                        <button class="projects-dropdown-btn" id="projectsDropdownBtn">
+                <!-- Mobile Projects Bar -->
+                <div class="mobile-projects-bar">
+                    <button class="mobile-all-tasks-btn" id="mobileAllTasksBtn">
+                        <i class="fas fa-inbox"></i>
+                        <span>All Tasks</span>
+                    </button>
+                    <div class="mobile-projects-dropdown" id="mobileProjectsDropdown">
+                        <button class="mobile-projects-dropdown-btn" id="mobileProjectsDropdownBtn">
                             <i class="fas fa-folder"></i> 
                             <span>Projects</span>
                             <i class="fas fa-chevron-down dropdown-icon"></i>
                         </button>
-                        <div class="projects-dropdown-menu" id="projectsDropdownMenu">
-                            <div class="dropdown-categories" id="dropdownCategoriesList">
+                        <div class="mobile-projects-dropdown-menu" id="mobileProjectsDropdownMenu">
+                            <div class="mobile-dropdown-categories" id="mobileDropdownCategoriesList">
                                 <!-- Categories will be populated here on mobile -->
                             </div>
                         </div>
                     </div>
+                    <button class="mobile-add-project-btn" id="mobileAddProjectBtn">
+                        <i class="fas fa-plus"></i>
+                        <span>Add</span>
+                    </button>
+                </div>
+                
+                <!-- Desktop Categories Header -->
+                <div class="categories-header">
+                    <h3>Projects</h3>
                     <button class="add-category-btn" id="addCategoryBtn" title="New Project">
                         <i class="fas fa-plus"></i>
+                        <span>New Project</span>
                     </button>
                 </div>
                 <div class="categories-wrapper" id="categoriesWrapper">
@@ -126,7 +141,7 @@
             <div class="add-task-section">
                 <div class="row">
                     <input type="text" class="input-box" id="taskInput" placeholder="Add a task...">
-                    <button class="add-btn" id="addTaskBtn">
+                    <button class="add-btn" id="addTaskBtn" title="Add Task">
                         <i class="fas fa-plus"></i>
                     </button>
                 </div>

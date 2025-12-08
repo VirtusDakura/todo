@@ -150,21 +150,38 @@ function attachEventListeners() {
     document.getElementById('cancelCategoryBtn').addEventListener('click', closeCategoryModal);
     document.getElementById('saveCategoryBtn').addEventListener('click', saveCategory);
     
-    // Projects dropdown for mobile
-    const projectsDropdownBtn = document.getElementById('projectsDropdownBtn');
-    const projectsDropdown = document.getElementById('projectsDropdown');
-    if (projectsDropdownBtn && projectsDropdown) {
-        projectsDropdownBtn.addEventListener('click', (e) => {
+    // Mobile projects bar
+    const mobileAllTasksBtn = document.getElementById('mobileAllTasksBtn');
+    const mobileProjectsDropdownBtn = document.getElementById('mobileProjectsDropdownBtn');
+    const mobileProjectsDropdown = document.getElementById('mobileProjectsDropdown');
+    const mobileAddProjectBtn = document.getElementById('mobileAddProjectBtn');
+    
+    if (mobileAllTasksBtn) {
+        mobileAllTasksBtn.addEventListener('click', () => {
+            currentCategory = 'all';
+            currentPage = 1;
+            renderTasks();
+            updateMobileProjectsButton();
+            updateMobileAllTasksBtn();
+        });
+    }
+    
+    if (mobileProjectsDropdownBtn && mobileProjectsDropdown) {
+        mobileProjectsDropdownBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            toggleProjectsDropdown();
+            toggleMobileProjectsDropdown();
         });
         
         // Close dropdown when clicking outside
         document.addEventListener('click', (e) => {
-            if (!projectsDropdown.contains(e.target)) {
-                closeProjectsDropdown();
+            if (!mobileProjectsDropdown.contains(e.target)) {
+                closeMobileProjectsDropdown();
             }
         });
+    }
+    
+    if (mobileAddProjectBtn) {
+        mobileAddProjectBtn.addEventListener('click', openCategoryModal);
     }
     
     // Mobile hamburger menu
@@ -294,6 +311,8 @@ function addTask() {
     saveToLocalStorage();
     renderTasks();
     updateStats();
+    updateMobileProjectsButton();
+    updateMobileAllTasksBtn();
     showNotification('Task added successfully', 'success');
 }
 
@@ -824,55 +843,111 @@ function updateMobileDarkModeIcon() {
     }
 }
 
-function toggleProjectsDropdown() {
-    const dropdown = document.getElementById('projectsDropdown');
+function toggleMobileProjectsDropdown() {
+    const dropdown = document.getElementById('mobileProjectsDropdown');
     const isActive = dropdown.classList.contains('active');
     
     if (isActive) {
-        closeProjectsDropdown();
+        closeMobileProjectsDropdown();
     } else {
-        openProjectsDropdown();
+        openMobileProjectsDropdown();
     }
 }
 
-function openProjectsDropdown() {
-    const dropdown = document.getElementById('projectsDropdown');
+function openMobileProjectsDropdown() {
+    const dropdown = document.getElementById('mobileProjectsDropdown');
     dropdown.classList.add('active');
-    populateDropdownCategories();
+    populateMobileDropdownCategories();
 }
 
-function closeProjectsDropdown() {
-    const dropdown = document.getElementById('projectsDropdown');
+function closeMobileProjectsDropdown() {
+    const dropdown = document.getElementById('mobileProjectsDropdown');
     dropdown.classList.remove('active');
 }
 
-function populateDropdownCategories() {
-    const dropdownList = document.getElementById('dropdownCategoriesList');
+function populateMobileDropdownCategories() {
+    const dropdownList = document.getElementById('mobileDropdownCategoriesList');
     if (!dropdownList) return;
     
     dropdownList.innerHTML = '';
     
-    // Add "All Tasks" button
-    const allBtn = document.createElement('button');
-    allBtn.className = 'category-btn' + (currentCategory === 'all' ? ' active' : '');
-    allBtn.innerHTML = '<i class="fas fa-inbox"></i> All Tasks';
-    allBtn.addEventListener('click', () => {
-        filterByCategory('all');
-        closeProjectsDropdown();
-    });
-    dropdownList.appendChild(allBtn);
-    
-    // Add category buttons
+    // Add category items with edit/delete buttons
     categories.forEach(category => {
-        const btn = document.createElement('button');
-        btn.className = 'category-btn' + (currentCategory === category.name ? ' active' : '');
-        btn.innerHTML = `<i class="fas fa-circle" style="color: ${category.color}"></i> ${category.name}`;
-        btn.addEventListener('click', () => {
-            filterByCategory(category.name);
-            closeProjectsDropdown();
+        const item = document.createElement('div');
+        item.className = 'category-item' + (currentCategory === category.id ? ' active' : '');
+        
+        const content = document.createElement('div');
+        content.className = 'category-item-content';
+        content.innerHTML = `<i class="fas fa-folder" style="color: ${category.color}"></i> <span>${category.name}</span>`;
+        content.addEventListener('click', () => {
+            currentCategory = category.id;
+            currentPage = 1;
+            renderTasks();
+            closeMobileProjectsDropdown();
+            updateMobileAllTasksBtn();
+            updateMobileProjectsButton();
         });
-        dropdownList.appendChild(btn);
+        
+        const actions = document.createElement('div');
+        actions.className = 'category-item-actions';
+        
+        const editBtn = document.createElement('button');
+        editBtn.className = 'category-action-btn edit-btn';
+        editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+        editBtn.title = 'Edit Project';
+        editBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openEditCategoryModal(category.id);
+            closeMobileProjectsDropdown();
+        });
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'category-action-btn delete-btn';
+        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+        deleteBtn.title = 'Delete Project';
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteCategory(category.id);
+            closeMobileProjectsDropdown();
+        });
+        
+        actions.appendChild(editBtn);
+        actions.appendChild(deleteBtn);
+        
+        item.appendChild(content);
+        item.appendChild(actions);
+        dropdownList.appendChild(item);
     });
+}
+
+function updateMobileAllTasksBtn() {
+    const mobileAllTasksBtn = document.getElementById('mobileAllTasksBtn');
+    if (mobileAllTasksBtn) {
+        if (currentCategory === 'all') {
+            mobileAllTasksBtn.classList.add('active');
+        } else {
+            mobileAllTasksBtn.classList.remove('active');
+        }
+    }
+}
+
+function updateMobileProjectsButton() {
+    const mobileProjectsDropdownBtn = document.getElementById('mobileProjectsDropdownBtn');
+    if (!mobileProjectsDropdownBtn) return;
+    
+    const btnTextSpan = mobileProjectsDropdownBtn.querySelector('span');
+    if (!btnTextSpan) return;
+    
+    if (currentCategory === 'all' || !currentCategory) {
+        btnTextSpan.textContent = 'Projects';
+    } else {
+        const category = categories.find(c => c.id === currentCategory);
+        if (category) {
+            btnTextSpan.textContent = category.name;
+        } else {
+            btnTextSpan.textContent = 'Projects';
+        }
+    }
 }
 
 function updateScrollArrows() {
@@ -979,6 +1054,10 @@ function renderCategories() {
     
     // Update scroll arrows visibility
     setTimeout(updateScrollArrows, 100);
+    
+    // Update mobile projects button text
+    updateMobileProjectsButton();
+    updateMobileAllTasksBtn();
 }
 
 function openCategoryModal() {
@@ -1044,12 +1123,15 @@ function deleteCategory(id) {
             if (currentCategory === id) {
                 currentCategory = 'all';
                 document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                document.querySelector('[data-category="all"]').classList.add('active');
+                const allTasksBtn = document.querySelector('[data-category="all"]');
+                if (allTasksBtn) allTasksBtn.classList.add('active');
             }
             
             saveToLocalStorage();
             renderCategories();
             renderTasks();
+            updateMobileProjectsButton();
+            updateMobileAllTasksBtn();
             showNotification('Project deleted successfully', 'success');
         }
     );
@@ -1137,6 +1219,8 @@ function saveCategory() {
             saveToLocalStorage();
             renderCategories();
             renderTasks(); // Re-render to update category display in tasks
+            updateMobileProjectsButton();
+            updateMobileAllTasksBtn();
             closeCategoryModal();
             showNotification('Project updated successfully', 'success');
         }
@@ -1151,6 +1235,8 @@ function saveCategory() {
         categories.push(category);
         saveToLocalStorage();
         renderCategories();
+        updateMobileProjectsButton();
+        updateMobileAllTasksBtn();
         closeCategoryModal();
         showNotification('Project created successfully', 'success');
     }

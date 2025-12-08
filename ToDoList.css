@@ -319,57 +319,89 @@ body.dark-mode .container {
     margin-bottom: 25px;
 }
 
-.categories-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.categories-header h3 {
-    color: var(--text-dark);
-    font-size: 16px;
-    font-weight: 600;
-}
-
-/* Projects Dropdown */
-.projects-dropdown {
-    position: relative;
-    display: none; /* Hidden by default, shown on mobile */
-}
-
-.projects-dropdown-btn {
-    display: flex;
-    align-items: center;
+/* Mobile Projects Bar */
+.mobile-projects-bar {
+    display: none; /* Hidden on desktop */
     gap: 8px;
+    margin-bottom: 15px;
+    align-items: stretch;
+}
+
+.mobile-all-tasks-btn,
+.mobile-add-project-btn {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 14px;
     background: var(--bg-white);
     border: 2px solid var(--primary-color);
-    padding: 8px 14px;
     border-radius: 8px;
     color: var(--primary-color);
     font-weight: 600;
     font-size: 13px;
     cursor: pointer;
     transition: var(--transition);
-    width: 100%;
-    justify-content: space-between;
+    white-space: nowrap;
+    min-height: 44px;
 }
 
-.projects-dropdown-btn:hover {
+.mobile-all-tasks-btn.active {
     background: var(--primary-color);
     color: var(--bg-white);
 }
 
-.projects-dropdown-btn .dropdown-icon {
-    transition: transform 0.3s ease;
-    font-size: 11px;
+.mobile-all-tasks-btn:hover,
+.mobile-add-project-btn:hover {
+    background: var(--primary-color);
+    color: var(--bg-white);
+    transform: translateY(-1px);
 }
 
-.projects-dropdown.active .dropdown-icon {
+.mobile-projects-dropdown {
+    flex: 1;
+    position: relative;
+    min-width: 0;
+    display: flex;
+}
+
+.mobile-projects-dropdown-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: var(--bg-white);
+    border: 2px solid var(--primary-color);
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition);
+    min-height: 44px;
+}
+
+.mobile-projects-dropdown-btn:hover {
+    background: var(--primary-color);
+    color: var(--bg-white);
+    transform: translateY(-1px);
+}
+
+.mobile-projects-dropdown-btn .dropdown-icon {
+    transition: transform 0.3s ease;
+    font-size: 11px;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.mobile-projects-dropdown.active .dropdown-icon {
     transform: rotate(180deg);
 }
 
-.projects-dropdown-menu {
+.mobile-projects-dropdown-menu {
     position: absolute;
     top: calc(100% + 5px);
     left: 0;
@@ -385,26 +417,128 @@ body.dark-mode .container {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.projects-dropdown.active .projects-dropdown-menu {
-    max-height: 300px;
+.mobile-projects-dropdown.active .mobile-projects-dropdown-menu {
+    max-height: 400px;
     opacity: 1;
     overflow-y: auto;
 }
 
-.dropdown-categories {
+.mobile-dropdown-categories {
     display: flex;
     flex-direction: column;
     gap: 2px;
     padding: 5px;
 }
 
-.dropdown-categories .category-btn {
+.mobile-dropdown-categories .category-item {
     width: 100%;
-    text-align: left;
-    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: transparent;
+    border: none;
     border-radius: 6px;
-    justify-content: flex-start;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: left;
+    font-size: 13px;
+    color: var(--text-dark);
+    min-height: 44px;
 }
+
+.mobile-dropdown-categories .category-item:hover {
+    background: var(--bg-light);
+}
+
+.mobile-dropdown-categories .category-item.active {
+    background: var(--primary-color);
+    color: var(--bg-white);
+}
+
+.mobile-dropdown-categories .category-item.active i {
+    color: var(--bg-white) !important;
+}
+
+.category-item-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.category-item-content i {
+    flex-shrink: 0;
+    font-size: 14px;
+}
+
+.category-item-content span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.category-item-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.category-action-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.category-action-btn:hover {
+    transform: scale(1.1);
+}
+
+.category-action-btn.edit-btn:hover {
+    background: var(--primary-color);
+    color: var(--bg-white);
+}
+
+.category-action-btn.delete-btn:hover {
+    background: var(--danger-color);
+    color: var(--bg-white);
+}
+
+.mobile-dropdown-categories .category-item.active .category-action-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--bg-white);
+}
+
+.mobile-dropdown-categories .category-item.active .category-action-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.categories-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.categories-header h3 {
+    color: var(--text-dark);
+    font-size: 16px;
+    font-weight: 600;
+}
+
 
 .add-category-btn {
     padding: 8px 16px;
@@ -1835,41 +1969,16 @@ ul li.drag-over {
         margin-bottom: 12px;
     }
     
-    .categories-header h3 {
-        display: none; /* Hide desktop heading */
+    .mobile-projects-bar {
+        display: flex; /* Show mobile projects bar */
     }
     
-    .projects-dropdown {
-        display: block; /* Show dropdown on mobile */
-        flex: 1;
-    }
-    
-    .add-category-btn {
-        padding: 8px;
-        font-size: 0;
-        width: 34px;
-        height: 34px;
-        border-radius: 8px;
-        justify-content: center;
-    }
-    
-    .add-category-btn i {
-        font-size: 14px;
-        margin: 0;
+    .categories-header {
+        display: none; /* Hide desktop categories header on mobile */
     }
     
     .categories-wrapper {
         display: none; /* Hide horizontal scroll on mobile, use dropdown instead */
-    }
-    
-    .scroll-arrow {
-        width: 28px;
-        height: 28px;
-    }
-    
-    .category-btn {
-        padding: 7px 10px;
-        font-size: 12px;
     }
     
     /* Add task form mobile */
@@ -2062,18 +2171,52 @@ ul li.drag-over {
     }
     
     .todo-app {
-        padding: 12px;
+        padding: 10px;
         margin: 5px auto;
     }
     
     .header-top h2 {
-        font-size: 20px;
+        font-size: 18px;
+    }
+    
+    .header-top h2 i {
+        font-size: 16px;
+    }
+    
+    .hamburger-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 16px;
     }
     
     .icon-btn {
-        width: 34px;
-        height: 34px;
-        font-size: 13px;
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+    
+    /* Mobile projects bar for small screens */
+    .mobile-all-tasks-btn,
+    .mobile-add-project-btn,
+    .mobile-projects-dropdown-btn {
+        font-size: 12px;
+        padding: 8px 10px;
+        min-height: 40px;
+    }
+    
+    .mobile-all-tasks-btn span,
+    .mobile-add-project-btn span {
+        display: inline;
+    }
+    
+    .mobile-projects-bar {
+        gap: 6px;
+    }
+    
+    .category-action-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 11px;
     }
     
     .stats-container {
@@ -2096,6 +2239,7 @@ ul li.drag-over {
     .stat-label {
         font-size: 12px;
         order: 1;
+        text-align: left;
     }
     
     .input-section {
@@ -2109,8 +2253,8 @@ ul li.drag-over {
     .priority-select,
     .category-select,
     .datetime-group input {
-        font-size: 13px;
-        padding: 8px;
+        font-size: 12px;
+        padding: 7px;
     }
     
     .filter-buttons {
@@ -2118,8 +2262,9 @@ ul li.drag-over {
     }
     
     .filter-btn {
-        font-size: 12px;
-        padding: 7px 10px;
+        font-size: 11px;
+        padding: 6px 8px;
+        min-width: 60px;
     }
     
     .category-btn {
@@ -2130,6 +2275,7 @@ ul li.drag-over {
     .category-menu-btn {
         width: 20px;
         height: 20px;
+        font-size: 10px;
     }
     
     .list-container li {
@@ -2138,6 +2284,7 @@ ul li.drag-over {
     
     .task-title {
         font-size: 13px;
+        line-height: 1.3;
     }
     
     .task-meta {
