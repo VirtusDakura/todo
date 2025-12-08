@@ -125,6 +125,11 @@ function attachEventListeners() {
     document.getElementById('closeConfirmModal').addEventListener('click', closeConfirmModal);
     document.getElementById('cancelConfirmBtn').addEventListener('click', closeConfirmModal);
     document.getElementById('confirmActionBtn').addEventListener('click', handleConfirmAction);
+
+    // Category scroll arrows
+    document.getElementById('scrollLeftBtn').addEventListener('click', scrollCategoriesLeft);
+    document.getElementById('scrollRightBtn').addEventListener('click', scrollCategoriesRight);
+    elements.categoriesList.addEventListener('scroll', updateScrollArrows);
 }
 
 // Task Management
@@ -641,6 +646,48 @@ function scrollToTop() {
     elements.listContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+function scrollCategoriesLeft() {
+    elements.categoriesList.scrollBy({
+        left: -200,
+        behavior: 'smooth'
+    });
+}
+
+function scrollCategoriesRight() {
+    elements.categoriesList.scrollBy({
+        left: 200,
+        behavior: 'smooth'
+    });
+}
+
+function updateScrollArrows() {
+    const container = elements.categoriesList;
+    const scrollLeft = container.scrollLeft;
+    const scrollWidth = container.scrollWidth;
+    const clientWidth = container.clientWidth;
+    
+    const leftBtn = document.getElementById('scrollLeftBtn');
+    const rightBtn = document.getElementById('scrollRightBtn');
+    
+    // Hide left arrow if at start
+    if (scrollLeft <= 0) {
+        leftBtn.style.opacity = '0';
+        leftBtn.style.pointerEvents = 'none';
+    } else {
+        leftBtn.style.opacity = '1';
+        leftBtn.style.pointerEvents = 'auto';
+    }
+    
+    // Hide right arrow if at end
+    if (scrollLeft + clientWidth >= scrollWidth - 1) {
+        rightBtn.style.opacity = '0';
+        rightBtn.style.pointerEvents = 'none';
+    } else {
+        rightBtn.style.opacity = '1';
+        rightBtn.style.pointerEvents = 'auto';
+    }
+}
+
 // Category Management
 function renderCategories() {
     // Clear existing categories except "All Tasks"
@@ -705,6 +752,9 @@ function renderCategories() {
         option.textContent = category.name;
         elements.categorySelect.appendChild(option);
     });
+    
+    // Update scroll arrows visibility
+    setTimeout(updateScrollArrows, 100);
 }
 
 function openCategoryModal() {

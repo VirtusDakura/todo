@@ -193,6 +193,7 @@ body.dark-mode .container {
     display: flex;
     align-items: center;
     gap: 5px;
+    white-space: nowrap;
 }
 
 .add-category-btn:hover {
@@ -200,10 +201,60 @@ body.dark-mode .container {
     color: var(--bg-white);
 }
 
+.categories-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.scroll-arrow {
+    width: 32px;
+    height: 32px;
+    background: var(--bg-light);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dark);
+    transition: var(--transition);
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.scroll-arrow:hover {
+    background: var(--primary-color);
+    color: var(--bg-white);
+    transform: scale(1.1);
+}
+
+.scroll-arrow i {
+    font-size: 14px;
+}
+
 .categories-list {
     display: flex;
     gap: 10px;
-    flex-wrap: wrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 10px 0;
+    scroll-behavior: smooth;
+    flex: 1;
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.categories-list::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for Firefox */
+@supports (scrollbar-width: none) {
+    .categories-list {
+        scrollbar-width: none;
+    }
 }
 
 .category-btn {
@@ -220,6 +271,8 @@ body.dark-mode .container {
     justify-content: space-between;
     gap: 8px;
     position: relative;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .category-btn:hover {
