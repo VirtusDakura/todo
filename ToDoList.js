@@ -30,7 +30,12 @@ const elements = {
     categoryModal: document.getElementById('categoryModal'),
     editModal: document.getElementById('editModal'),
     detailsModal: document.getElementById('detailsModal'),
+    confirmModal: document.getElementById('confirmModal'),
+    notificationToast: document.getElementById('notificationToast'),
 };
+
+// Confirmation callback
+let confirmCallback = null;
 
 // Initialize App
 function init() {
@@ -104,6 +109,11 @@ function attachEventListeners() {
     document.getElementById('closeDetailsModal').addEventListener('click', closeDetailsModal);
     document.getElementById('closeDetailsBtn').addEventListener('click', closeDetailsModal);
     document.getElementById('editFromDetailsBtn').addEventListener('click', editFromDetails);
+
+    // Confirmation modal
+    document.getElementById('closeConfirmModal').addEventListener('click', closeConfirmModal);
+    document.getElementById('cancelConfirmBtn').addEventListener('click', closeConfirmModal);
+    document.getElementById('confirmActionBtn').addEventListener('click', handleConfirmAction);
 }
 
 // Task Management
@@ -111,7 +121,7 @@ function addTask() {
     const taskText = elements.taskInput.value.trim();
     
     if (!taskText) {
-        showNotification('Please enter a task', 'error');
+        showNotification('Please enter a task description', 'error');
         return;
     }
 
@@ -147,13 +157,17 @@ function toggleTask(id) {
 }
 
 function deleteTask(id) {
-    if (confirm('Are you sure you want to delete this task?')) {
-        tasks = tasks.filter(t => t.id !== id);
-        saveToLocalStorage();
-        renderTasks();
-        updateStats();
-        showNotification('Task deleted', 'success');
-    }
+    showConfirmModal(
+        'Delete Task',
+        'Are you sure you want to delete this task? This action cannot be undone.',
+        () => {
+            tasks = tasks.filter(t => t.id !== id);
+            saveToLocalStorage();
+            renderTasks();
+            updateStats();
+            showNotification('Task deleted successfully', 'success');
+        }
+    );
 }
 
 function openDetailsModal(id) {
@@ -252,7 +266,13 @@ function saveEditTask() {
     const task = tasks.find(t => t.id === editingTaskId);
     if (!task) return;
 
-    task.text = document.getElementById('editTaskInput').value.trim();
+    const taskText = document.getElementById('editTaskInput').value.trim();
+    if (!taskText) {
+        showNotification('Task description cannot be empty', 'error');
+        return;
+    }
+
+    task.text = taskText;
     task.notes = document.getElementById('editTaskNotes').value.trim();
     task.priority = document.getElementById('editPrioritySelect').value;
     task.dueDate = document.getElementById('editDueDateInput').value;
@@ -260,7 +280,7 @@ function saveEditTask() {
     saveToLocalStorage();
     renderTasks();
     closeEditModal();
-    showNotification('Task updated', 'success');
+    showNotification('Task updated successfully', 'success');
 }
 
 // Render Functions
@@ -509,7 +529,7 @@ function saveCategory() {
     saveToLocalStorage();
     renderCategories();
     closeCategoryModal();
-    showNotification('Project created', 'success');
+    showNotification('Project created successfully', 'success');
 }
 
 // Statistics
@@ -658,8 +678,51 @@ function setMinDate() {
 }
 
 function showNotification(message, type = 'info') {
-    // Simple console notification (can be enhanced with toast UI)
-    console.log(`[${type.toUpperCase()}] ${message}`);
+    const toast = elements.notificationToast;
+    const icon = document.getElementById('toastIcon');
+    const messageEl = document.getElementById('toastMessage');
+
+    // Remove existing classes
+    toast.className = 'toast';
+    
+    // Set icon based on type
+    const icons = {
+        success: '<i class="fas fa-check-circle"></i>',
+        error: '<i class="fas fa-exclamation-circle"></i>',
+        warning: '<i class="fas fa-exclamation-triangle"></i>',
+        info: '<i class="fas fa-info-circle"></i>'
+    };
+    
+    icon.innerHTML = icons[type] || icons.info;
+    messageEl.textContent = message;
+    
+    // Add type class and show
+    toast.classList.add(`toast-${type}`, 'show');
+    
+    // Auto hide after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+function showConfirmModal(title, message, onConfirm) {
+    document.getElementById('confirmModalTitle').textContent = title;
+    document.getElementById('confirmModalMessage').textContent = message;
+    confirmCallback = onConfirm;
+    elements.confirmModal.classList.add('active');
+}
+
+function closeConfirmModal() {
+    elements.confirmModal.classList.remove('active');
+    confirmCallback = null;
+}
+
+function handleConfirmAction() {
+    if (confirmCallback) {
+        confirmCallback();
+        confirmCallback = null;
+    }
+    closeConfirmModal();
 }
 
 // Local Storage
