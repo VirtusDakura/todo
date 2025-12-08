@@ -11,6 +11,7 @@ let selectedColor = '#ff5945';
 // DOM Elements
 const elements = {
     taskInput: document.getElementById('taskInput'),
+    taskNotesInput: document.getElementById('taskNotesInput'),
     addTaskBtn: document.getElementById('addTaskBtn'),
     listContainer: document.getElementById('listContainer'),
     prioritySelect: document.getElementById('prioritySelect'),
@@ -133,11 +134,12 @@ function addTask() {
         dueDate: elements.dueDateInput.value,
         category: elements.categorySelect.value,
         createdAt: new Date().toISOString(),
-        notes: ''
+        notes: elements.taskNotesInput.value.trim()
     };
 
     tasks.unshift(task);
     elements.taskInput.value = '';
+    elements.taskNotesInput.value = '';
     elements.dueDateInput.value = '';
     
     saveToLocalStorage();

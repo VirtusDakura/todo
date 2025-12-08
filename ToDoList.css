@@ -286,6 +286,35 @@ body.dark-mode .container {
     box-shadow: var(--shadow);
 }
 
+/* Task Notes Container */
+.task-notes-container {
+    margin-bottom: 15px;
+}
+
+.task-notes-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--bg-light);
+    border-radius: 8px;
+    background: var(--bg-white);
+    color: var(--text-dark);
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    resize: vertical;
+    min-height: 60px;
+    outline: none;
+    transition: var(--transition);
+}
+
+.task-notes-input::placeholder {
+    color: var(--text-muted);
+}
+
+.task-notes-input:focus {
+    border-color: var(--primary-color);
+    background: var(--bg-white);
+}
+
 /* Task Options */
 .task-options {
     display: flex;
