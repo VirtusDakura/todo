@@ -148,6 +148,23 @@ function attachEventListeners() {
     document.getElementById('closeCategoryModal').addEventListener('click', closeCategoryModal);
     document.getElementById('cancelCategoryBtn').addEventListener('click', closeCategoryModal);
     document.getElementById('saveCategoryBtn').addEventListener('click', saveCategory);
+    
+    // Projects dropdown for mobile
+    const projectsDropdownBtn = document.getElementById('projectsDropdownBtn');
+    const projectsDropdown = document.getElementById('projectsDropdown');
+    if (projectsDropdownBtn && projectsDropdown) {
+        projectsDropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleProjectsDropdown();
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!projectsDropdown.contains(e.target)) {
+                closeProjectsDropdown();
+            }
+        });
+    }
 
     // Color picker
     document.querySelectorAll('.color-option').forEach(btn => {
@@ -721,6 +738,57 @@ function scrollCategoriesRight() {
     elements.categoriesList.scrollBy({
         left: 200,
         behavior: 'smooth'
+    });
+}
+
+function toggleProjectsDropdown() {
+    const dropdown = document.getElementById('projectsDropdown');
+    const isActive = dropdown.classList.contains('active');
+    
+    if (isActive) {
+        closeProjectsDropdown();
+    } else {
+        openProjectsDropdown();
+    }
+}
+
+function openProjectsDropdown() {
+    const dropdown = document.getElementById('projectsDropdown');
+    dropdown.classList.add('active');
+    populateDropdownCategories();
+}
+
+function closeProjectsDropdown() {
+    const dropdown = document.getElementById('projectsDropdown');
+    dropdown.classList.remove('active');
+}
+
+function populateDropdownCategories() {
+    const dropdownList = document.getElementById('dropdownCategoriesList');
+    if (!dropdownList) return;
+    
+    dropdownList.innerHTML = '';
+    
+    // Add "All Tasks" button
+    const allBtn = document.createElement('button');
+    allBtn.className = 'category-btn' + (currentCategory === 'all' ? ' active' : '');
+    allBtn.innerHTML = '<i class="fas fa-inbox"></i> All Tasks';
+    allBtn.addEventListener('click', () => {
+        filterByCategory('all');
+        closeProjectsDropdown();
+    });
+    dropdownList.appendChild(allBtn);
+    
+    // Add category buttons
+    categories.forEach(category => {
+        const btn = document.createElement('button');
+        btn.className = 'category-btn' + (currentCategory === category.name ? ' active' : '');
+        btn.innerHTML = `<i class="fas fa-circle" style="color: ${category.color}"></i> ${category.name}`;
+        btn.addEventListener('click', () => {
+            filterByCategory(category.name);
+            closeProjectsDropdown();
+        });
+        dropdownList.appendChild(btn);
     });
 }
 

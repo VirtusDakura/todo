@@ -59,12 +59,23 @@
             <!-- Categories/Projects -->
             <div class="categories-section">
                 <div class="categories-header">
-                    <h3>Projects</h3>
-                    <button class="add-category-btn" id="addCategoryBtn">
-                        <i class="fas fa-plus"></i> New Project
+                    <div class="projects-dropdown" id="projectsDropdown">
+                        <button class="projects-dropdown-btn" id="projectsDropdownBtn">
+                            <i class="fas fa-folder"></i> 
+                            <span>Projects</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </button>
+                        <div class="projects-dropdown-menu" id="projectsDropdownMenu">
+                            <div class="dropdown-categories" id="dropdownCategoriesList">
+                                <!-- Categories will be populated here on mobile -->
+                            </div>
+                        </div>
+                    </div>
+                    <button class="add-category-btn" id="addCategoryBtn" title="New Project">
+                        <i class="fas fa-plus"></i>
                     </button>
                 </div>
-                <div class="categories-wrapper">
+                <div class="categories-wrapper" id="categoriesWrapper">
                     <button class="scroll-arrow scroll-left" id="scrollLeftBtn" aria-label="Scroll left">
                         <i class="fas fa-chevron-left"></i>
                     </button>
@@ -82,15 +93,15 @@
             <!-- Add Task Form -->
             <div class="add-task-section">
                 <div class="row">
-                    <input type="text" class="input-box" id="taskInput" placeholder="What needs to be done?">
+                    <input type="text" class="input-box" id="taskInput" placeholder="Add a task...">
                     <button class="add-btn" id="addTaskBtn">
-                        <i class="fas fa-plus"></i> Add
+                        <i class="fas fa-plus"></i>
                     </button>
                 </div>
                 
                 <!-- Task Notes -->
                 <div class="task-notes-container">
-                    <textarea class="task-notes-input" id="taskNotesInput" placeholder="Add notes (optional)..." rows="2"></textarea>
+                    <textarea class="task-notes-input" id="taskNotesInput" placeholder="Notes (optional)" rows="2"></textarea>
                 </div>
                 
                 <!-- Task Options -->

@@ -205,6 +205,80 @@ body.dark-mode .container {
     font-weight: 600;
 }
 
+/* Projects Dropdown */
+.projects-dropdown {
+    position: relative;
+    display: none; /* Hidden by default, shown on mobile */
+}
+
+.projects-dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-white);
+    border: 2px solid var(--primary-color);
+    padding: 8px 14px;
+    border-radius: 8px;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 100%;
+    justify-content: space-between;
+}
+
+.projects-dropdown-btn:hover {
+    background: var(--primary-color);
+    color: var(--bg-white);
+}
+
+.projects-dropdown-btn .dropdown-icon {
+    transition: transform 0.3s ease;
+    font-size: 11px;
+}
+
+.projects-dropdown.active .dropdown-icon {
+    transform: rotate(180deg);
+}
+
+.projects-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    background: var(--bg-white);
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.projects-dropdown.active .projects-dropdown-menu {
+    max-height: 300px;
+    opacity: 1;
+    overflow-y: auto;
+}
+
+.dropdown-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 5px;
+}
+
+.dropdown-categories .category-btn {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: 6px;
+    justify-content: flex-start;
+}
+
 .add-category-btn {
     padding: 8px 16px;
     background: var(--bg-light);
@@ -228,6 +302,8 @@ body.dark-mode .container {
 .categories-wrapper {
     position: relative;
     display: flex;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
     align-items: center;
     gap: 10px;
 }
@@ -1578,100 +1654,83 @@ ul li.drag-over {
     }
     
     .todo-app {
-        padding: 15px;
+        padding: 12px;
         margin: 10px auto;
         border-radius: 8px;
     }
     
     .header-top {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 12px;
     }
     
     .header-top h2 {
-        font-size: 22px;
-        width: 100%;
+        font-size: 20px;
+        width: auto;
+        flex: 1;
     }
     
     .header-controls {
-        width: 100%;
+        width: auto;
         justify-content: flex-end;
+        gap: 6px;
     }
     
     .icon-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 14px;
+        width: 34px;
+        height: 34px;
+        font-size: 13px;
     }
     
     .stats-container {
         grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
+        gap: 8px;
+        margin-bottom: 12px;
     }
     
     .stat-card {
-        padding: 12px;
+        padding: 10px;
     }
     
     .stat-value {
-        font-size: 24px;
+        font-size: 22px;
     }
     
     .stat-label {
         font-size: 11px;
     }
     
-    .input-section {
-        padding: 15px;
-    }
-    
-    #taskInput {
-        font-size: 14px;
-        padding: 10px 12px;
-    }
-    
-    #taskNotesInput {
-        font-size: 13px;
-        padding: 8px 12px;
-        min-height: 60px;
-    }
-    
-    .add-task-btn {
-        padding: 10px 20px;
-        font-size: 14px;
-    }
-    
-    .filter-section {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .search-box {
-        width: 100%;
-        min-width: auto;
-    }
-    
-    .filter-buttons {
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .filter-btn {
-        flex: 1;
-        padding: 8px 12px;
-        font-size: 13px;
-    }
-    
-    .sort-select {
-        width: 100%;
-    }
-    
+    /* Projects section mobile */
     .categories-section {
-        padding: 12px;
+        margin-bottom: 12px;
     }
     
     .categories-header h3 {
-        font-size: 16px;
+        display: none; /* Hide desktop heading */
+    }
+    
+    .projects-dropdown {
+        display: block; /* Show dropdown on mobile */
+        flex: 1;
+    }
+    
+    .add-category-btn {
+        padding: 8px;
+        font-size: 0;
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        justify-content: center;
+    }
+    
+    .add-category-btn i {
+        font-size: 14px;
+        margin: 0;
+    }
+    
+    .categories-wrapper {
+        display: none; /* Hide horizontal scroll on mobile, use dropdown instead */
     }
     
     .scroll-arrow {
@@ -1680,85 +1739,190 @@ ul li.drag-over {
     }
     
     .category-btn {
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+    
+    /* Add task form mobile */
+    .add-task-section {
+        margin-bottom: 12px;
+    }
+    
+    .row {
+        gap: 6px;
+    }
+    
+    #taskInput {
+        font-size: 13px;
+        padding: 9px 12px;
+        height: 38px;
+    }
+    
+    .add-btn {
+        padding: 9px;
+        font-size: 0;
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+    }
+    
+    .add-btn i {
+        font-size: 16px;
+        margin: 0;
+    }
+    
+    #taskNotesInput {
+        font-size: 12px;
+        padding: 8px 10px;
+        min-height: 50px;
+    }
+    
+    .task-options {
+        gap: 6px;
+    }
+    
+    .priority-select,
+    .category-select {
+        font-size: 12px;
+        padding: 7px 10px;
+        height: 34px;
+    }
+    
+    .datetime-group {
+        gap: 6px;
+    }
+    
+    .datetime-group input {
+        font-size: 12px;
+        padding: 7px 8px;
+        height: 34px;
+    }
+    
+    /* Filter section mobile */
+    .filter-section {
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .search-box {
+        width: 100%;
+        min-width: auto;
         padding: 8px 12px;
+    }
+    
+    .search-box input {
         font-size: 13px;
     }
     
+    .filter-buttons {
+        width: 100%;
+        justify-content: space-between;
+        gap: 6px;
+    }
+    
+    .filter-btn {
+        flex: 1;
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+    
+    .sort-select {
+        width: 100%;
+        font-size: 12px;
+        padding: 7px 10px;
+        height: 34px;
+    }
+    
+    /* Task list mobile */
     .list-container li {
-        padding: 12px;
+        padding: 10px;
         flex-direction: column;
         align-items: flex-start;
-        gap: 10px;
+        gap: 8px;
     }
     
     .task-checkbox {
         position: absolute;
-        top: 12px;
-        left: 12px;
+        top: 10px;
+        left: 10px;
     }
     
     .task-content {
         width: 100%;
-        padding-left: 30px;
+        padding-left: 28px;
     }
     
     .task-title {
-        font-size: 14px;
+        font-size: 13px;
+        line-height: 1.4;
     }
     
     .task-meta {
         flex-wrap: wrap;
-        gap: 6px;
-        font-size: 11px;
+        gap: 5px;
+        font-size: 10px;
     }
     
     .task-actions {
         width: 100%;
         justify-content: flex-end;
-        padding-left: 30px;
+        padding-left: 28px;
     }
     
     .task-action-btn {
         width: 32px;
         height: 32px;
-        font-size: 13px;
+        font-size: 12px;
     }
     
+    /* Modal mobile */
     .modal-content {
         width: 95%;
         max-width: 500px;
-        padding: 20px;
+        padding: 16px;
         margin: 10px;
         max-height: 90vh;
         overflow-y: auto;
     }
     
     .modal-header h3 {
-        font-size: 18px;
+        font-size: 17px;
     }
     
     .modal-input,
     .modal-textarea {
-        font-size: 14px;
+        font-size: 13px;
+        padding: 8px 10px;
     }
     
     .detail-item {
-        padding: 12px;
+        padding: 10px;
     }
     
     .detail-label {
-        font-size: 12px;
+        font-size: 11px;
     }
     
     .detail-value {
-        font-size: 14px;
+        font-size: 13px;
     }
     
     .btn-primary,
     .btn-secondary,
     .btn-danger {
-        padding: 10px 18px;
-        font-size: 14px;
+        padding: 9px 16px;
+        font-size: 13px;
+    }
+    
+    .pagination-info {
+        font-size: 11px;
+    }
+    
+    .pagination-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
     }
 }
 
