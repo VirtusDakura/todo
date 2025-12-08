@@ -53,6 +53,7 @@ function init() {
     attachEventListeners();
     setMinDate();
     initMobileOptimizations();
+    updateMobileDarkModeIcon(); // Set correct icon on load
 }
 
 // Mobile Optimizations
@@ -163,6 +164,57 @@ function attachEventListeners() {
             if (!projectsDropdown.contains(e.target)) {
                 closeProjectsDropdown();
             }
+        });
+    }
+    
+    // Mobile hamburger menu
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const closeMenuBtn = document.getElementById('closeMenuBtn');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    
+    if (hamburgerBtn) {
+        hamburgerBtn.addEventListener('click', openMobileMenu);
+    }
+    
+    if (closeMenuBtn) {
+        closeMenuBtn.addEventListener('click', closeMobileMenu);
+    }
+    
+    if (mobileMenuOverlay) {
+        mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+    }
+    
+    // Mobile menu items
+    const mobileStatsBtn = document.getElementById('mobileStatsBtn');
+    const mobileDarkModeToggle = document.getElementById('mobileDarkModeToggle');
+    const mobileExportBtn = document.getElementById('mobileExportBtn');
+    const mobileImportBtn = document.getElementById('mobileImportBtn');
+    
+    if (mobileStatsBtn) {
+        mobileStatsBtn.addEventListener('click', () => {
+            toggleStats();
+            closeMobileMenu();
+        });
+    }
+    
+    if (mobileDarkModeToggle) {
+        mobileDarkModeToggle.addEventListener('click', () => {
+            toggleDarkMode();
+            updateMobileDarkModeIcon();
+        });
+    }
+    
+    if (mobileExportBtn) {
+        mobileExportBtn.addEventListener('click', () => {
+            openExportModal();
+            closeMobileMenu();
+        });
+    }
+    
+    if (mobileImportBtn) {
+        mobileImportBtn.addEventListener('click', () => {
+            document.getElementById('importFile').click();
+            closeMobileMenu();
         });
     }
 
@@ -741,6 +793,37 @@ function scrollCategoriesRight() {
     });
 }
 
+function openMobileMenu() {
+    const drawer = document.getElementById('mobileMenuDrawer');
+    const overlay = document.getElementById('mobileMenuOverlay');
+    
+    if (drawer && overlay) {
+        drawer.classList.add('active');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+    }
+}
+
+function closeMobileMenu() {
+    const drawer = document.getElementById('mobileMenuDrawer');
+    const overlay = document.getElementById('mobileMenuOverlay');
+    
+    if (drawer && overlay) {
+        drawer.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+}
+
+function updateMobileDarkModeIcon() {
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const mobileIcon = document.querySelector('#mobileDarkModeToggle i');
+    
+    if (mobileIcon) {
+        mobileIcon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
+    }
+}
+
 function toggleProjectsDropdown() {
     const dropdown = document.getElementById('projectsDropdown');
     const isActive = dropdown.classList.contains('active');
@@ -1098,6 +1181,9 @@ function toggleDarkMode() {
     
     const icon = elements.darkModeToggle.querySelector('i');
     icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+    
+    // Update mobile menu icon as well
+    updateMobileDarkModeIcon();
 }
 
 // Export/Import

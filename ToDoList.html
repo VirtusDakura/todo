@@ -33,6 +33,38 @@
                         </button>
                         <input type="file" id="importFile" accept=".json,.xlsx,.xls,.csv" class="hidden-input" aria-label="Import tasks file" title="Import file">
                     </div>
+                    <button class="hamburger-btn" id="hamburgerBtn" title="Menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+                
+                <!-- Mobile Menu Drawer -->
+                <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+                <div class="mobile-menu-drawer" id="mobileMenuDrawer">
+                    <div class="mobile-menu-header">
+                        <h3>Menu</h3>
+                        <button class="close-menu-btn" id="closeMenuBtn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="mobile-menu-items">
+                        <button class="mobile-menu-item" id="mobileStatsBtn">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>Statistics</span>
+                        </button>
+                        <button class="mobile-menu-item" id="mobileDarkModeToggle">
+                            <i class="fas fa-moon"></i>
+                            <span>Dark Mode</span>
+                        </button>
+                        <button class="mobile-menu-item" id="mobileExportBtn">
+                            <i class="fas fa-download"></i>
+                            <span>Export Tasks</span>
+                        </button>
+                        <button class="mobile-menu-item" id="mobileImportBtn">
+                            <i class="fas fa-upload"></i>
+                            <span>Import Tasks</span>
+                        </button>
+                    </div>
                 </div>
                 
                 <!-- Stats Dashboard -->

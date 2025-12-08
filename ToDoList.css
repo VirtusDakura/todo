@@ -112,6 +112,133 @@ body.dark-mode .container {
     gap: 10px;
 }
 
+.hamburger-btn {
+    display: none; /* Hidden on desktop */
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border-radius: 50%;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    font-size: 18px;
+}
+
+.hamburger-btn:hover {
+    background: var(--primary-color);
+    color: var(--bg-white);
+}
+
+/* Mobile Menu Drawer */
+.mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-menu-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+.mobile-menu-drawer {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 280px;
+    height: 100%;
+    background: var(--bg-white);
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+}
+
+.mobile-menu-drawer.active {
+    right: 0;
+}
+
+.mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 2px solid var(--bg-light);
+}
+
+.mobile-menu-header h3 {
+    margin: 0;
+    color: var(--text-dark);
+    font-size: 18px;
+}
+
+.close-menu-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    font-size: 16px;
+}
+
+.close-menu-btn:hover {
+    background: var(--danger-color);
+    color: var(--bg-white);
+}
+
+.mobile-menu-items {
+    padding: 10px;
+}
+
+.mobile-menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: left;
+    font-size: 15px;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.mobile-menu-item:hover {
+    background: var(--bg-light);
+}
+
+.mobile-menu-item i {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+.mobile-menu-item span {
+    flex: 1;
+    font-weight: 500;
+}
+
 .icon-btn {
     width: 40px;
     height: 40px;
@@ -1672,9 +1799,11 @@ ul li.drag-over {
     }
     
     .header-controls {
-        width: auto;
-        justify-content: flex-end;
-        gap: 6px;
+        display: none; /* Hide desktop controls on mobile */
+    }
+    
+    .hamburger-btn {
+        display: flex; /* Show hamburger menu on mobile */
     }
     
     .icon-btn {
