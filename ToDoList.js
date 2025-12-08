@@ -35,6 +35,7 @@ const elements = {
     editModal: document.getElementById('editModal'),
     detailsModal: document.getElementById('detailsModal'),
     confirmModal: document.getElementById('confirmModal'),
+    exportModal: document.getElementById('exportModal'),
     notificationToast: document.getElementById('notificationToast'),
     paginationContainer: document.getElementById('paginationContainer'),
 };
@@ -92,7 +93,7 @@ function attachEventListeners() {
     elements.statsBtn.addEventListener('click', toggleStats);
 
     // Export/Import
-    elements.exportBtn.addEventListener('click', exportTasks);
+    elements.exportBtn.addEventListener('click', openExportModal);
     elements.importBtn.addEventListener('click', () => elements.importFile.click());
     elements.importFile.addEventListener('change', importTasks);
 
@@ -973,28 +974,254 @@ function toggleDarkMode() {
 }
 
 // Export/Import
-function exportTasks() {
+function openExportModal() {
+    elements.exportModal.classList.add('active');
+    
+    // Add event listeners to format buttons
+    document.querySelectorAll('.format-btn').forEach(btn => {
+        btn.onclick = () => {
+            const format = btn.dataset.format;
+            exportTasks(format);
+            elements.exportModal.classList.remove('active');
+        };
+    });
+    
+    // Close button
+    document.getElementById('closeExportModalBtn').onclick = () => {
+        elements.exportModal.classList.remove('active');
+    };
+    
+    // Click outside to close
+    elements.exportModal.onclick = (e) => {
+        if (e.target === elements.exportModal) {
+            elements.exportModal.classList.remove('active');
+        }
+    };
+}
+
+function exportTasks(format) {
+    const timestamp = Date.now();
+    const dateStr = new Date().toISOString().split('T')[0];
+    
+    switch(format) {
+        case 'json':
+            exportAsJSON(timestamp);
+            break;
+        case 'csv':
+            exportAsCSV(dateStr);
+            break;
+        case 'xlsx':
+            exportAsExcel(dateStr);
+            break;
+        case 'pdf':
+            exportAsPDF(dateStr);
+            break;
+        default:
+            exportAsJSON(timestamp);
+    }
+}
+
+function exportAsJSON(timestamp) {
     const data = {
         tasks: tasks,
         categories: categories,
-        exportDate: new Date().toISOString()
+        exportDate: new Date().toISOString(),
+        version: '1.0'
     };
 
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    downloadFile(blob, `taskmaster-backup-${timestamp}.json`);
+    showNotification('Tasks exported as JSON successfully', 'success');
+}
+
+function exportAsCSV(dateStr) {
+    // CSV Headers
+    let csv = 'Task,Priority,Status,Due Date,Time,Project,Notes\\n';
+    
+    // Add tasks
+    tasks.forEach(task => {
+        const project = categories.find(c => c.id === task.category)?.name || 'No Project';
+        const status = task.completed ? 'Completed' : 'Pending';
+        const dueDate = task.dueDate || 'No date';
+        const time = task.dueTime || 'No time';
+        const notes = (task.notes || '').replace(/"/g, '""').replace(/\\n/g, ' ');
+        const taskText = task.text.replace(/"/g, '""');
+        
+        csv += `"${taskText}","${task.priority}","${status}","${dueDate}","${time}","${project}","${notes}"\\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    downloadFile(blob, `taskmaster-export-${dateStr}.csv`);
+    showNotification('Tasks exported as CSV successfully', 'success');
+}
+
+function exportAsExcel(dateStr) {
+    // Create styled HTML table for Excel
+    let html = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            table { border-collapse: collapse; width: 100%; }
+            th { background-color: #ff5945; color: white; font-weight: bold; padding: 10px; border: 1px solid #ddd; }
+            td { padding: 8px; border: 1px solid #ddd; }
+            .priority-high { background-color: #ffebee; color: #c62828; font-weight: bold; }
+            .priority-medium { background-color: #fff3e0; color: #ef6c00; font-weight: bold; }
+            .priority-low { background-color: #e8f5e9; color: #2e7d32; font-weight: bold; }
+        </style>
+    </head>
+    <body>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Task</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Due Date</th>
+                    <th>Time</th>
+                    <th>Project</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    tasks.forEach((task, index) => {
+        const project = categories.find(c => c.id === task.category)?.name || 'No Project';
+        const status = task.completed ? 'Completed' : 'Pending';
+        const dueDate = task.dueDate || '-';
+        const time = task.dueTime || '-';
+        const notes = task.notes || '-';
+        
+        html += '<tr>';
+        html += `<td>${index + 1}</td>`;
+        html += `<td>${task.text}</td>`;
+        html += `<td class="priority-${task.priority}">${task.priority.toUpperCase()}</td>`;
+        html += `<td>${status}</td>`;
+        html += `<td>${dueDate}</td>`;
+        html += `<td>${time}</td>`;
+        html += `<td>${project}</td>`;
+        html += `<td>${notes}</td>`;
+        html += '</tr>';
+    });
+    
+    html += `
+            </tbody>
+        </table>
+    </body>
+    </html>`;
+    
+    const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+    downloadFile(blob, `taskmaster-export-${dateStr}.xls`);
+    showNotification('Tasks exported as Excel table successfully', 'success');
+}
+
+function exportAsPDF(dateStr) {
+    // Create printable HTML with table
+    let html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>TaskMaster Pro - Task List</title>
+        <style>
+            body { font-family: Arial, sans-serif; padding: 40px; }
+            h1 { color: #ff5945; margin-bottom: 10px; }
+            .date { color: #666; margin-bottom: 30px; font-size: 14px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { background: #ff5945; color: white; padding: 12px; text-align: left; font-weight: 600; }
+            td { padding: 12px; border-bottom: 1px solid #ddd; }
+            tr:hover { background: #f5f5f5; }
+            .priority { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; display: inline-block; }
+            .high { background: #ffebee; color: #c62828; }
+            .medium { background: #fff3e0; color: #ef6c00; }
+            .low { background: #e8f5e9; color: #2e7d32; }
+            .completed { color: #4caf50; font-weight: 600; }
+            .pending { color: #ff9800; font-weight: 600; }
+            .notes-cell { font-size: 13px; color: #666; max-width: 250px; }
+        </style>
+    </head>
+    <body>
+        <h1>📋 TaskMaster Pro - Task List</h1>
+        <div class="date">Exported on ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Task</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Due Date</th>
+                    <th>Time</th>
+                    <th>Project</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    tasks.forEach((task, index) => {
+        const project = categories.find(c => c.id === task.category)?.name || 'No Project';
+        const status = task.completed ? 'Completed' : 'Pending';
+        const statusClass = task.completed ? 'completed' : 'pending';
+        const dueDate = task.dueDate || '-';
+        const time = task.dueTime || '-';
+        const notes = task.notes || '-';
+        
+        html += `<tr>`;
+        html += `<td>${index + 1}</td>`;
+        html += `<td><strong>${task.text}</strong></td>`;
+        html += `<td><span class="priority ${task.priority}">${task.priority.toUpperCase()}</span></td>`;
+        html += `<td><span class="${statusClass}">${status}</span></td>`;
+        html += `<td>${dueDate}</td>`;
+        html += `<td>${time}</td>`;
+        html += `<td>${project}</td>`;
+        html += `<td class="notes-cell">${notes}</td>`;
+        html += `</tr>`;
+    });
+    
+    html += `
+            </tbody>
+        </table>
+    </body>
+    </html>`;
+    
+    const blob = new Blob([html], { type: 'text/html' });
+    downloadFile(blob, `taskmaster-export-${dateStr}.html`);
+    showNotification('Tasks exported as HTML table - Open in browser and print to PDF', 'info');
+}
+
+function downloadFile(blob, filename) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `taskmaster-backup-${Date.now()}.json`;
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
-    
-    showNotification('Tasks exported successfully', 'success');
 }
 
 function importTasks(e) {
     const file = e.target.files[0];
     if (!file) return;
+    
+    const extension = file.name.split('.').pop().toLowerCase();
+    
+    if (extension === 'json') {
+        importJSON(file);
+    } else if (extension === 'csv') {
+        importCSV(file);
+    } else if (extension === 'xlsx' || extension === 'xls') {
+        showNotification('Excel import coming soon - Use CSV format instead', 'warning');
+    } else {
+        showNotification('Unsupported file format - Use JSON or CSV', 'error');
+    }
+    
+    // Reset file input
+    e.target.value = '';
+}
 
+function importJSON(file) {
     const reader = new FileReader();
     reader.onload = (event) => {
         try {
@@ -1008,15 +1235,84 @@ function importTasks(e) {
             renderTasks();
             updateStats();
             
-            showNotification('Tasks imported successfully', 'success');
+            showNotification('Tasks imported from JSON successfully', 'success');
         } catch (error) {
-            showNotification('Error importing file', 'error');
+            showNotification('Error importing JSON file', 'error');
         }
     };
     reader.readAsText(file);
+}
+
+function importCSV(file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        try {
+            const csv = event.target.result;
+            const lines = csv.split('\\n');
+            const imported = [];
+            
+            // Skip header
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                
+                const columns = parseCSVLine(lines[i]);
+                if (columns.length < 4) continue;
+                
+                const task = {
+                    id: Date.now() + i,
+                    text: columns[0] || 'Untitled Task',
+                    priority: (columns[1] || 'medium').toLowerCase(),
+                    completed: columns[2] === 'Completed',
+                    dueDate: columns[3] !== 'No date' ? columns[3] : null,
+                    dueTime: columns[4] !== 'No time' ? columns[4] : null,
+                    category: 'all',
+                    notes: columns[6] || ''
+                };
+                
+                imported.push(task);
+            }
+            
+            if (imported.length > 0) {
+                tasks = [...tasks, ...imported];
+                saveToLocalStorage();
+                renderTasks();
+                updateStats();
+                showNotification(`Imported ${imported.length} tasks from CSV`, 'success');
+            } else {
+                showNotification('No tasks found in CSV file', 'warning');
+            }
+        } catch (error) {
+            showNotification('Error importing CSV file', 'error');
+        }
+    };
+    reader.readAsText(file);
+}
+
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
     
-    // Reset file input
-    e.target.value = '';
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        
+        if (char === '"') {
+            if (inQuotes && line[i + 1] === '"') {
+                current += '"';
+                i++;
+            } else {
+                inQuotes = !inQuotes;
+            }
+        } else if (char === ',' && !inQuotes) {
+            result.push(current.trim());
+            current = '';
+        } else {
+            current += char;
+        }
+    }
+    
+    result.push(current.trim());
+    return result;
 }
 
 // Drag and Drop
