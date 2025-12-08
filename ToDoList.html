@@ -153,6 +153,54 @@
         </div>
     </div>
 
+    <!-- Modal for viewing task details -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Task Details</h3>
+                <button class="close-btn" id="closeDetailsModal" title="Close" aria-label="Close modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-section">
+                    <div class="detail-item">
+                        <label class="detail-label"><i class="fas fa-tasks"></i> Task</label>
+                        <div class="detail-value" id="detailTaskTitle"></div>
+                    </div>
+                    <div class="detail-item">
+                        <label class="detail-label"><i class="fas fa-flag"></i> Priority</label>
+                        <div class="detail-value" id="detailPriority"></div>
+                    </div>
+                    <div class="detail-item">
+                        <label class="detail-label"><i class="fas fa-calendar"></i> Due Date</label>
+                        <div class="detail-value" id="detailDueDate"></div>
+                    </div>
+                    <div class="detail-item">
+                        <label class="detail-label"><i class="fas fa-folder"></i> Project</label>
+                        <div class="detail-value" id="detailCategory"></div>
+                    </div>
+                    <div class="detail-item">
+                        <label class="detail-label"><i class="fas fa-check-circle"></i> Status</label>
+                        <div class="detail-value" id="detailStatus"></div>
+                    </div>
+                    <div class="detail-item">
+                        <label class="detail-label"><i class="fas fa-clock"></i> Created</label>
+                        <div class="detail-value" id="detailCreated"></div>
+                    </div>
+                    <div class="detail-item full-width">
+                        <label class="detail-label"><i class="fas fa-sticky-note"></i> Notes</label>
+                        <div class="detail-value" id="detailNotes"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="closeDetailsBtn">Close</button>
+                <button class="btn-primary" id="editFromDetailsBtn"><i class="fas fa-edit"></i> Edit Task</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal for editing tasks -->
     <div class="modal" id="editModal">
         <div class="modal-content">

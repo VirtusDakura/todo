@@ -29,6 +29,7 @@ const elements = {
     addCategoryBtn: document.getElementById('addCategoryBtn'),
     categoryModal: document.getElementById('categoryModal'),
     editModal: document.getElementById('editModal'),
+    detailsModal: document.getElementById('detailsModal'),
 };
 
 // Initialize App
@@ -98,6 +99,11 @@ function attachEventListeners() {
     document.getElementById('closeEditModal').addEventListener('click', closeEditModal);
     document.getElementById('cancelEditBtn').addEventListener('click', closeEditModal);
     document.getElementById('saveEditBtn').addEventListener('click', saveEditTask);
+
+    // Details modal
+    document.getElementById('closeDetailsModal').addEventListener('click', closeDetailsModal);
+    document.getElementById('closeDetailsBtn').addEventListener('click', closeDetailsModal);
+    document.getElementById('editFromDetailsBtn').addEventListener('click', editFromDetails);
 }
 
 // Task Management
@@ -148,6 +154,80 @@ function deleteTask(id) {
         updateStats();
         showNotification('Task deleted', 'success');
     }
+}
+
+function openDetailsModal(id) {
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+
+    editingTaskId = id;
+
+    // Set task title
+    document.getElementById('detailTaskTitle').textContent = task.text;
+
+    // Set priority with badge
+    const priorityEl = document.getElementById('detailPriority');
+    priorityEl.innerHTML = `<span class="task-priority ${task.priority}">${task.priority.toUpperCase()}</span>`;
+
+    // Set due date
+    const dueDateEl = document.getElementById('detailDueDate');
+    if (task.dueDate) {
+        const dueDate = new Date(task.dueDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const isOverdue = dueDate < today && !task.completed;
+        dueDateEl.innerHTML = `<span class="${isOverdue ? 'overdue-text' : ''}">${formatFullDate(task.dueDate)}</span>`;
+    } else {
+        dueDateEl.textContent = 'No due date';
+        dueDateEl.style.color = 'var(--text-muted)';
+    }
+
+    // Set category
+    const categoryEl = document.getElementById('detailCategory');
+    if (task.category && task.category !== 'all') {
+        const category = categories.find(c => c.id === task.category);
+        if (category) {
+            categoryEl.innerHTML = `<i class="fas fa-folder" style="color: ${category.color}"></i> ${category.name}`;
+        } else {
+            categoryEl.textContent = 'No project';
+            categoryEl.style.color = 'var(--text-muted)';
+        }
+    } else {
+        categoryEl.textContent = 'No project';
+        categoryEl.style.color = 'var(--text-muted)';
+    }
+
+    // Set status
+    const statusEl = document.getElementById('detailStatus');
+    statusEl.innerHTML = task.completed 
+        ? '<span style="color: var(--success-color);"><i class="fas fa-check-circle"></i> Completed</span>' 
+        : '<span style="color: var(--warning-color);"><i class="fas fa-clock"></i> Pending</span>';
+
+    // Set created date
+    document.getElementById('detailCreated').textContent = formatFullDate(task.createdAt);
+
+    // Set notes
+    const notesEl = document.getElementById('detailNotes');
+    if (task.notes && task.notes.trim()) {
+        notesEl.textContent = task.notes;
+        notesEl.style.color = 'var(--text-dark)';
+    } else {
+        notesEl.textContent = 'No notes added';
+        notesEl.style.color = 'var(--text-muted)';
+        notesEl.style.fontStyle = 'italic';
+    }
+
+    elements.detailsModal.classList.add('active');
+}
+
+function closeDetailsModal() {
+    elements.detailsModal.classList.remove('active');
+    editingTaskId = null;
+}
+
+function editFromDetails() {
+    closeDetailsModal();
+    openEditModal(editingTaskId);
 }
 
 function openEditModal(id) {
@@ -289,6 +369,13 @@ function createTaskElement(task) {
     li.appendChild(checkbox);
     li.appendChild(content);
     li.appendChild(actions);
+
+    // Click on task content to view details
+    content.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openDetailsModal(task.id);
+    });
+    content.style.cursor = 'pointer';
 
     // Drag events
     li.addEventListener('dragstart', handleDragStart);
@@ -549,6 +636,18 @@ function handleDrop(e) {
 function formatDate(dateString) {
     const date = new Date(dateString);
     const options = { month: 'short', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+}
+
+function formatFullDate(dateString) {
+    const date = new Date(dateString);
+    const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    };
     return date.toLocaleDateString('en-US', options);
 }
 
