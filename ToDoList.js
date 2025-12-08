@@ -1036,21 +1036,32 @@ function exportAsJSON(timestamp) {
 
 function exportAsCSV(dateStr) {
     // CSV Headers
-    let csv = 'Task,Priority,Status,Due Date,Time,Project,Notes\\n';
+    const headers = ['Task', 'Priority', 'Status', 'Due Date', 'Time', 'Project', 'Notes'];
+    let csv = headers.join(',') + '\n';
     
     // Add tasks
     tasks.forEach(task => {
         const project = categories.find(c => c.id === task.category)?.name || 'No Project';
         const status = task.completed ? 'Completed' : 'Pending';
-        const dueDate = task.dueDate || 'No date';
-        const time = task.dueTime || 'No time';
-        const notes = (task.notes || '').replace(/"/g, '""').replace(/\\n/g, ' ');
+        const dueDate = task.dueDate || '-';
+        const time = task.dueTime || '-';
+        const notes = (task.notes || '').replace(/"/g, '""').replace(/\n/g, ' ');
         const taskText = task.text.replace(/"/g, '""');
         
-        csv += `"${taskText}","${task.priority}","${status}","${dueDate}","${time}","${project}","${notes}"\\n`;
+        const row = [
+            `"${taskText}"`,
+            `"${task.priority.toUpperCase()}"`,
+            `"${status}"`,
+            `"${dueDate}"`,
+            `"${time}"`,
+            `"${project}"`,
+            `"${notes}"`
+        ];
+        
+        csv += row.join(',') + '\n';
     });
     
-    const blob = new Blob([csv], { type: 'text/csv' });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     downloadFile(blob, `taskmaster-export-${dateStr}.csv`);
     showNotification('Tasks exported as CSV successfully', 'success');
 }
@@ -1184,12 +1195,20 @@ function exportAsPDF(dateStr) {
     html += `
             </tbody>
         </table>
+        <script>
+            // Auto-print dialog when opened
+            window.onload = function() {
+                setTimeout(function() {
+                    window.print();
+                }, 500);
+            };
+        </script>
     </body>
     </html>`;
     
     const blob = new Blob([html], { type: 'text/html' });
-    downloadFile(blob, `taskmaster-export-${dateStr}.html`);
-    showNotification('Tasks exported as HTML table - Open in browser and print to PDF', 'info');
+    downloadFile(blob, `taskmaster-print-${dateStr}.html`);
+    showNotification('Download complete! Open the HTML file - it will auto-print. Choose "Save as PDF"', 'success');
 }
 
 function downloadFile(blob, filename) {
