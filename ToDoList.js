@@ -7,6 +7,8 @@ let currentCategory = 'all';
 let currentSort = 'default';
 let editingTaskId = null;
 let selectedColor = '#ff5945';
+let currentPage = 1;
+const tasksPerPage = 5;
 
 // DOM Elements
 const elements = {
@@ -33,6 +35,7 @@ const elements = {
     detailsModal: document.getElementById('detailsModal'),
     confirmModal: document.getElementById('confirmModal'),
     notificationToast: document.getElementById('notificationToast'),
+    paginationContainer: document.getElementById('paginationContainer'),
 };
 
 // Confirmation callback
@@ -58,11 +61,15 @@ function attachEventListeners() {
     });
 
     // Search
-    elements.searchInput.addEventListener('input', renderTasks);
+    elements.searchInput.addEventListener('input', () => {
+        currentPage = 1;
+        renderTasks();
+    });
 
     // Sort
     elements.sortSelect.addEventListener('change', (e) => {
         currentSort = e.target.value;
+        currentPage = 1;
         renderTasks();
     });
 
@@ -72,6 +79,7 @@ function attachEventListeners() {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
             currentFilter = e.target.dataset.filter;
+            currentPage = 1;
             renderTasks();
         });
     });
@@ -143,6 +151,7 @@ function addTask() {
     elements.taskNotesInput.value = '';
     elements.dueDateInput.value = '';
     
+    currentPage = 1;
     saveToLocalStorage();
     renderTasks();
     updateStats();
@@ -290,20 +299,33 @@ function saveEditTask() {
 function renderTasks() {
     let filteredTasks = filterTasks();
     filteredTasks = sortTasks(filteredTasks);
+    
+    // Prioritize upcoming tasks
+    filteredTasks = prioritizeUpcomingTasks(filteredTasks);
 
     elements.listContainer.innerHTML = '';
 
     if (filteredTasks.length === 0) {
         elements.emptyState.classList.remove('hidden');
         elements.listContainer.style.display = 'none';
+        elements.paginationContainer.style.display = 'none';
     } else {
         elements.emptyState.classList.add('hidden');
         elements.listContainer.style.display = 'block';
 
-        filteredTasks.forEach(task => {
+        // Pagination
+        const totalPages = Math.ceil(filteredTasks.length / tasksPerPage);
+        const startIndex = (currentPage - 1) * tasksPerPage;
+        const endIndex = startIndex + tasksPerPage;
+        const tasksToDisplay = filteredTasks.slice(startIndex, endIndex);
+
+        tasksToDisplay.forEach(task => {
             const li = createTaskElement(task);
             elements.listContainer.appendChild(li);
         });
+
+        // Render pagination
+        renderPagination(totalPages, filteredTasks.length);
     }
 }
 
@@ -462,6 +484,149 @@ function sortTasks(tasks) {
     return sorted;
 }
 
+function prioritizeUpcomingTasks(tasks) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const upcoming = [];
+    const overdue = [];
+    const noDueDate = [];
+    const completed = [];
+    
+    tasks.forEach(task => {
+        if (task.completed) {
+            completed.push(task);
+        } else if (!task.dueDate) {
+            noDueDate.push(task);
+        } else {
+            const dueDate = new Date(task.dueDate);
+            dueDate.setHours(0, 0, 0, 0);
+            
+            if (dueDate < today) {
+                overdue.push(task);
+            } else {
+                upcoming.push(task);
+            }
+        }
+    });
+    
+    // Sort overdue by date (closest to today first)
+    overdue.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
+    
+    // Sort upcoming by date (soonest first)
+    upcoming.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+    
+    // Return in priority order: overdue, upcoming, no due date, completed
+    return [...overdue, ...upcoming, ...noDueDate, ...completed];
+}
+
+function renderPagination(totalPages, totalTasks) {
+    if (totalPages <= 1) {
+        elements.paginationContainer.style.display = 'none';
+        return;
+    }
+
+    elements.paginationContainer.style.display = 'flex';
+    elements.paginationContainer.innerHTML = '';
+
+    // Task count info
+    const info = document.createElement('div');
+    info.className = 'pagination-info';
+    const startTask = (currentPage - 1) * tasksPerPage + 1;
+    const endTask = Math.min(currentPage * tasksPerPage, totalTasks);
+    info.textContent = `Showing ${startTask}-${endTask} of ${totalTasks} tasks`;
+    elements.paginationContainer.appendChild(info);
+
+    // Pagination buttons container
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.className = 'pagination-buttons';
+
+    // Previous button
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'pagination-btn';
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTasks();
+            scrollToTop();
+        }
+    });
+    buttonsContainer.appendChild(prevBtn);
+
+    // Page numbers
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    if (startPage > 1) {
+        const firstBtn = createPageButton(1);
+        buttonsContainer.appendChild(firstBtn);
+        if (startPage > 2) {
+            const dots = document.createElement('span');
+            dots.className = 'pagination-dots';
+            dots.textContent = '...';
+            buttonsContainer.appendChild(dots);
+        }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        const pageBtn = createPageButton(i);
+        buttonsContainer.appendChild(pageBtn);
+    }
+
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            const dots = document.createElement('span');
+            dots.className = 'pagination-dots';
+            dots.textContent = '...';
+            buttonsContainer.appendChild(dots);
+        }
+        const lastBtn = createPageButton(totalPages);
+        buttonsContainer.appendChild(lastBtn);
+    }
+
+    // Next button
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'pagination-btn';
+    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderTasks();
+            scrollToTop();
+        }
+    });
+    buttonsContainer.appendChild(nextBtn);
+
+    elements.paginationContainer.appendChild(buttonsContainer);
+}
+
+function createPageButton(pageNum) {
+    const btn = document.createElement('button');
+    btn.className = 'pagination-btn';
+    if (pageNum === currentPage) {
+        btn.classList.add('active');
+    }
+    btn.textContent = pageNum;
+    btn.addEventListener('click', () => {
+        currentPage = pageNum;
+        renderTasks();
+        scrollToTop();
+    });
+    return btn;
+}
+
+function scrollToTop() {
+    elements.listContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 // Category Management
 function renderCategories() {
     // Clear existing categories except "All Tasks"
@@ -474,6 +639,7 @@ function renderCategories() {
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
         e.target.classList.add('active');
         currentCategory = 'all';
+        currentPage = 1;
         renderTasks();
     });
 
@@ -498,6 +664,7 @@ function renderCategories() {
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentCategory = category.id;
+            currentPage = 1;
             renderTasks();
         });
         
