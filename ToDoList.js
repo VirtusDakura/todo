@@ -130,6 +130,21 @@ function attachEventListeners() {
     document.getElementById('scrollLeftBtn').addEventListener('click', scrollCategoriesLeft);
     document.getElementById('scrollRightBtn').addEventListener('click', scrollCategoriesRight);
     elements.categoriesList.addEventListener('scroll', updateScrollArrows);
+    
+    // Global ESC key to close modals
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (elements.categoryModal.classList.contains('active')) {
+                closeCategoryModal();
+            } else if (elements.editModal.classList.contains('active')) {
+                closeEditModal();
+            } else if (elements.detailsModal.classList.contains('active')) {
+                closeDetailsModal();
+            } else if (elements.confirmModal.classList.contains('active')) {
+                closeConfirmModal();
+            }
+        }
+    });
 }
 
 // Task Management
@@ -720,7 +735,9 @@ function renderCategories() {
         `;
         
         // Click to filter tasks
-        btn.querySelector('.category-content').addEventListener('click', (e) => {
+        const categoryContent = btn.querySelector('.category-content');
+        categoryContent.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -730,7 +747,9 @@ function renderCategories() {
         });
         
         // Toggle menu
-        btn.querySelector('.category-menu-btn').addEventListener('click', (e) => {
+        const menuBtn = btn.querySelector('.category-menu-btn');
+        menuBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
             toggleCategoryMenu(category.id, btn);
         });
@@ -854,6 +873,9 @@ function toggleCategoryMenu(categoryId, buttonElement) {
     // Add to body
     document.body.appendChild(menu);
     
+    // Focus first item for keyboard accessibility
+    setTimeout(() => menu.querySelector('.dropdown-item').focus(), 0);
+    
     // Event listeners
     menu.querySelector('[data-action="edit"]').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -873,6 +895,15 @@ function toggleCategoryMenu(categoryId, buttonElement) {
             if (!menu.contains(e.target)) {
                 menu.remove();
                 document.removeEventListener('click', closeMenu);
+            }
+        });
+        
+        // Close menu on ESC key
+        document.addEventListener('keydown', function closeMenuEsc(e) {
+            if (e.key === 'Escape') {
+                menu.remove();
+                document.removeEventListener('keydown', closeMenuEsc);
+                buttonElement.focus(); // Return focus to button
             }
         });
     }, 0);

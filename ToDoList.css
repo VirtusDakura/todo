@@ -111,7 +111,12 @@ body.dark-mode .container {
 .icon-btn:hover {
     background: var(--primary-color);
     color: var(--bg-white);
-    transform: translateY(-2px);
+    transform: scale(1.05);
+}
+
+.icon-btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
 }
 
 /* Stats Dashboard */
@@ -230,6 +235,11 @@ body.dark-mode .container {
     transform: scale(1.1);
 }
 
+.scroll-arrow:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
 .scroll-arrow i {
     font-size: 14px;
 }
@@ -288,12 +298,23 @@ body.dark-mode .container {
     box-shadow: 0 4px 12px rgba(255, 89, 69, 0.3);
 }
 
+.category-btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.category-btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
 .category-content {
     display: flex;
     align-items: center;
     gap: 8px;
     flex: 1;
     cursor: pointer;
+    pointer-events: auto;
 }
 
 .category-name {
@@ -310,6 +331,7 @@ body.dark-mode .container {
     transition: var(--transition);
     opacity: 0;
     cursor: pointer;
+    pointer-events: auto;
 }
 
 .category-btn:hover .category-menu-btn {
@@ -437,6 +459,15 @@ body.dark-mode .container {
     box-shadow: var(--shadow);
 }
 
+.add-btn:active {
+    transform: translateY(0);
+}
+
+.add-btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
 /* Task Notes Container */
 .task-notes-container {
     margin-bottom: 15px;
@@ -464,6 +495,7 @@ body.dark-mode .container {
 .task-notes-input:focus {
     border-color: var(--primary-color);
     background: var(--bg-white);
+    box-shadow: 0 0 0 3px rgba(255, 89, 69, 0.1);
 }
 
 /* Task Options */
@@ -494,6 +526,7 @@ body.dark-mode .container {
 .due-time-input:focus,
 .category-select:focus {
     border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 89, 69, 0.1);
 }
 
 .priority-select {
@@ -597,6 +630,16 @@ body.dark-mode .container {
     color: var(--bg-white);
 }
 
+.filter-btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+}
+
+.filter-btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+}
+
 .sort-select {
     padding: 10px 15px;
     border: 2px solid var(--bg-light);
@@ -611,6 +654,7 @@ body.dark-mode .container {
 
 .sort-select:focus {
     border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 89, 69, 0.1);
 }
 
 /* Task List */
@@ -800,6 +844,15 @@ ul li:hover .task-actions {
     transform: scale(1.1);
 }
 
+.task-action-btn:active {
+    transform: scale(0.95);
+}
+
+.task-action-btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
 .task-action-btn.edit:hover {
     background: #2196F3;
     color: white;
@@ -887,6 +940,11 @@ ul li:hover .task-actions {
 .pagination-btn:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+.pagination-btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
 }
 
 .pagination-dots {
@@ -993,6 +1051,11 @@ ul li:hover .task-actions {
     color: white;
 }
 
+.close-btn:focus-visible {
+    outline: 2px solid var(--danger-color);
+    outline-offset: 2px;
+}
+
 .modal-body {
     padding: 25px;
 }
@@ -1015,6 +1078,7 @@ ul li:hover .task-actions {
 .modal-input:focus,
 .modal-textarea:focus {
     border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 89, 69, 0.1);
 }
 
 .modal-textarea {
@@ -1052,6 +1116,11 @@ ul li:hover .task-actions {
 
 .color-option:hover {
     transform: scale(1.1);
+}
+
+.color-option:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
 }
 
 .color-option.selected {
@@ -1123,6 +1192,15 @@ ul li:hover .task-actions {
     transform: translateY(-2px);
 }
 
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-primary:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
 .btn-secondary {
     background: var(--bg-light);
     color: var(--text-dark);
@@ -1131,6 +1209,11 @@ ul li:hover .task-actions {
 .btn-secondary:hover {
     background: var(--text-muted);
     color: white;
+}
+
+.btn-secondary:focus-visible {
+    outline: 2px solid var(--text-muted);
+    outline-offset: 2px;
 }
 
 /* Responsive Design */
