@@ -3,24 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List App</title>
+    <title>TaskMaster Pro - Advanced To-Do List</title>
     <link rel="stylesheet" href="ToDoList.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <div class="todo-app">
-            <h2>To-Do List</h2>
-            <div class="row">
-                <input type="text" class="input-box" placeholder="Add your text...">
-                <button onclick="addTask()">Add</button>
+            <!-- Header with Stats and Dark Mode -->
+            <div class="header">
+                <div class="header-top">
+                    <h2><i class="fas fa-tasks"></i> TaskMaster Pro</h2>
+                    <div class="header-controls">
+                        <button class="icon-btn" id="statsBtn" title="Statistics">
+                            <i class="fas fa-chart-pie"></i>
+                        </button>
+                        <button class="icon-btn" id="darkModeToggle" title="Toggle Dark Mode">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <button class="icon-btn" id="exportBtn" title="Export Tasks">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="icon-btn" id="importBtn" title="Import Tasks">
+                            <i class="fas fa-upload"></i>
+                        </button>
+                        <input type="file" id="importFile" accept=".json" class="hidden-input" aria-label="Import tasks file" title="Import JSON file">
+                    </div>
+                </div>
+                
+                <!-- Stats Dashboard -->
+                <div class="stats-container hidden" id="statsContainer">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalTasks">0</div>
+                        <div class="stat-label">Total Tasks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="completedTasks">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="pendingTasks">0</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="completionRate">0%</div>
+                        <div class="stat-label">Completion Rate</div>
+                    </div>
+                </div>
             </div>
-            <ul class="list-container">
-                <!-- <li class="checked">Task 1</li>
-                <li>Task 2</li>
-                <li>Task 3</li> -->
+
+            <!-- Categories/Projects -->
+            <div class="categories-section">
+                <div class="categories-header">
+                    <h3>Projects</h3>
+                    <button class="add-category-btn" id="addCategoryBtn">
+                        <i class="fas fa-plus"></i> New Project
+                    </button>
+                </div>
+                <div class="categories-list" id="categoriesList">
+                    <button class="category-btn active" data-category="all">
+                        <i class="fas fa-inbox"></i> All Tasks
+                    </button>
+                </div>
+            </div>
+
+            <!-- Add Task Form -->
+            <div class="add-task-section">
+                <div class="row">
+                    <input type="text" class="input-box" id="taskInput" placeholder="What needs to be done?">
+                    <button class="add-btn" id="addTaskBtn">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+                
+                <!-- Task Options -->
+                <div class="task-options">
+                    <select class="priority-select" id="prioritySelect" aria-label="Select task priority" title="Task Priority">
+                        <option value="low">Low Priority</option>
+                        <option value="medium" selected>Medium Priority</option>
+                        <option value="high">High Priority</option>
+                    </select>
+                    
+                    <input type="date" class="due-date-input" id="dueDateInput" aria-label="Set due date" title="Due Date">
+                    
+                    <select class="category-select" id="categorySelect" aria-label="Select project category" title="Project Category">
+                        <option value="all">No Project</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="filter-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search tasks...">
+                </div>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="active">Active</button>
+                    <button class="filter-btn" data-filter="completed">Completed</button>
+                </div>
+                <select class="sort-select" id="sortSelect" aria-label="Sort tasks" title="Sort Options">
+                    <option value="default">Sort by: Default</option>
+                    <option value="priority">Sort by: Priority</option>
+                    <option value="dueDate">Sort by: Due Date</option>
+                    <option value="alphabetical">Sort by: A-Z</option>
+                </select>
+            </div>
+
+            <!-- Task List -->
+            <ul class="list-container" id="listContainer">
             </ul>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-check-circle"></i>
+                <p>No tasks yet. Add one above!</p>
+            </div>
         </div>
     </div>
-<script src="ToDoList.js"></script>
+
+    <!-- Modal for adding categories -->
+    <div class="modal" id="categoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>New Project</h3>
+                <button class="close-btn" id="closeCategoryModal" title="Close" aria-label="Close modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="categoryNameInput" placeholder="Project name" class="modal-input">
+                <div class="color-picker">
+                    <label>Project Color:</label>
+                    <div class="color-options">
+                        <button class="color-option color-red" data-color="#ff5945" title="Red" aria-label="Select red color"></button>
+                        <button class="color-option color-green" data-color="#4CAF50" title="Green" aria-label="Select green color"></button>
+                        <button class="color-option color-blue" data-color="#2196F3" title="Blue" aria-label="Select blue color"></button>
+                        <button class="color-option color-orange" data-color="#FF9800" title="Orange" aria-label="Select orange color"></button>
+                        <button class="color-option color-purple" data-color="#9C27B0" title="Purple" aria-label="Select purple color"></button>
+                        <button class="color-option color-gray" data-color="#607D8B" title="Gray" aria-label="Select gray color"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelCategoryBtn">Cancel</button>
+                <button class="btn-primary" id="saveCategoryBtn">Create Project</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for editing tasks -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Task</h3>
+                <button class="close-btn" id="closeEditModal" title="Close" aria-label="Close modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="editTaskInput" placeholder="Task name" class="modal-input">
+                <textarea id="editTaskNotes" placeholder="Add notes..." class="modal-textarea"></textarea>
+                <div class="edit-options">
+                    <select class="priority-select" id="editPrioritySelect" aria-label="Select task priority" title="Task Priority">
+                        <option value="low">Low Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="high">High Priority</option>
+                    </select>
+                    <input type="date" class="due-date-input" id="editDueDateInput" aria-label="Set due date" title="Due Date">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelEditBtn">Cancel</button>
+                <button class="btn-primary" id="saveEditBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="ToDoList.js"></script>
 </body>
 </html>
