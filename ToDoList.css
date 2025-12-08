@@ -26,6 +26,25 @@
 
 body {
     transition: var(--transition);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body.mobile-device {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+body.mobile-device * {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+body.mobile-device input,
+body.mobile-device textarea {
+    -webkit-user-select: text;
+    user-select: text;
 }
 
 body.dark-mode {
@@ -42,7 +61,7 @@ body.dark-mode {
     width: 100%;
     min-height: 100vh;
     background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
-    padding: 20px;
+    padding: 10px;
     transition: var(--transition);
 }
 
@@ -54,8 +73,8 @@ body.dark-mode .container {
     width: 100%;
     max-width: 900px;
     background: var(--bg-white);
-    margin: 50px auto 20px;
-    padding: 30px;
+    margin: 20px auto;
+    padding: 20px;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     transition: var(--transition);
@@ -1520,5 +1539,509 @@ ul li.drag-over {
 @media (max-width: 768px) {
     .export-formats {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ==================================
+   COMPREHENSIVE RESPONSIVE DESIGN
+   ================================== */
+
+/* Large Tablets & Small Desktops (992px - 1200px) */
+@media (max-width: 1200px) {
+    .todo-app {
+        max-width: 800px;
+        padding: 25px;
+    }
+}
+
+/* Tablets (768px - 992px) */
+@media (max-width: 992px) {
+    .todo-app {
+        max-width: 700px;
+        padding: 20px;
+        margin: 15px auto;
+    }
+    
+    .header-top h2 {
+        font-size: 24px;
+    }
+    
+    .stat-card {
+        padding: 15px;
+    }
+}
+
+/* Mobile Landscape & Small Tablets (576px - 768px) */
+@media (max-width: 768px) {
+    .container {
+        padding: 8px;
+    }
+    
+    .todo-app {
+        padding: 15px;
+        margin: 10px auto;
+        border-radius: 8px;
+    }
+    
+    .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .header-top h2 {
+        font-size: 22px;
+        width: 100%;
+    }
+    
+    .header-controls {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+    
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .stat-card {
+        padding: 12px;
+    }
+    
+    .stat-value {
+        font-size: 24px;
+    }
+    
+    .stat-label {
+        font-size: 11px;
+    }
+    
+    .input-section {
+        padding: 15px;
+    }
+    
+    #taskInput {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+    
+    #taskNotesInput {
+        font-size: 13px;
+        padding: 8px 12px;
+        min-height: 60px;
+    }
+    
+    .add-task-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    .filter-section {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .search-box {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .filter-buttons {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .filter-btn {
+        flex: 1;
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .sort-select {
+        width: 100%;
+    }
+    
+    .categories-section {
+        padding: 12px;
+    }
+    
+    .categories-header h3 {
+        font-size: 16px;
+    }
+    
+    .scroll-arrow {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .category-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .list-container li {
+        padding: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .task-checkbox {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+    }
+    
+    .task-content {
+        width: 100%;
+        padding-left: 30px;
+    }
+    
+    .task-title {
+        font-size: 14px;
+    }
+    
+    .task-meta {
+        flex-wrap: wrap;
+        gap: 6px;
+        font-size: 11px;
+    }
+    
+    .task-actions {
+        width: 100%;
+        justify-content: flex-end;
+        padding-left: 30px;
+    }
+    
+    .task-action-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        max-width: 500px;
+        padding: 20px;
+        margin: 10px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .modal-header h3 {
+        font-size: 18px;
+    }
+    
+    .modal-input,
+    .modal-textarea {
+        font-size: 14px;
+    }
+    
+    .detail-item {
+        padding: 12px;
+    }
+    
+    .detail-label {
+        font-size: 12px;
+    }
+    
+    .detail-value {
+        font-size: 14px;
+    }
+    
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger {
+        padding: 10px 18px;
+        font-size: 14px;
+    }
+}
+
+/* Mobile Portrait (320px - 576px) */
+@media (max-width: 576px) {
+    .container {
+        padding: 5px;
+    }
+    
+    .todo-app {
+        padding: 12px;
+        margin: 5px auto;
+    }
+    
+    .header-top h2 {
+        font-size: 20px;
+    }
+    
+    .icon-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 13px;
+    }
+    
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .stat-card {
+        padding: 10px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .stat-value {
+        font-size: 20px;
+        order: 2;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+        order: 1;
+    }
+    
+    .input-section {
+        padding: 12px;
+    }
+    
+    .task-options {
+        gap: 8px;
+    }
+    
+    .priority-select,
+    .category-select,
+    .datetime-group input {
+        font-size: 13px;
+        padding: 8px;
+    }
+    
+    .filter-buttons {
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        font-size: 12px;
+        padding: 7px 10px;
+    }
+    
+    .category-btn {
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+    
+    .category-menu-btn {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .list-container li {
+        padding: 10px;
+    }
+    
+    .task-title {
+        font-size: 13px;
+    }
+    
+    .task-meta {
+        font-size: 10px;
+    }
+    
+    .pagination-info {
+        font-size: 12px;
+    }
+    
+    .pagination-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+    
+    .modal-content {
+        width: 98%;
+        padding: 15px;
+        border-radius: 8px;
+    }
+    
+    .modal-header {
+        padding: 0 0 12px 0;
+    }
+    
+    .modal-header h3 {
+        font-size: 16px;
+    }
+    
+    .close-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+    }
+    
+    .modal-body {
+        padding: 12px 0;
+    }
+    
+    .modal-footer {
+        padding: 12px 0 0 0;
+        flex-direction: column-reverse;
+        gap: 8px;
+    }
+    
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .color-options {
+        gap: 10px;
+    }
+    
+    .color-option {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .detail-grid {
+        gap: 10px;
+    }
+    
+    .toast {
+        right: 10px;
+        left: 10px;
+        bottom: 10px;
+        padding: 12px 15px;
+        font-size: 13px;
+    }
+    
+    .toast-icon {
+        font-size: 20px;
+    }
+    
+    .export-formats {
+        gap: 10px;
+    }
+    
+    .format-btn {
+        padding: 15px;
+    }
+    
+    .format-btn i {
+        font-size: 28px;
+    }
+    
+    .format-btn .format-name {
+        font-size: 14px;
+    }
+    
+    .format-btn small {
+        font-size: 11px;
+    }
+}
+
+/* Extra Small Mobile (max-width: 375px) */
+@media (max-width: 375px) {
+    .header-top h2 {
+        font-size: 18px;
+    }
+    
+    .icon-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+    
+    .header-controls {
+        gap: 6px;
+    }
+    
+    .add-task-btn {
+        font-size: 13px;
+        padding: 9px 16px;
+    }
+    
+    .task-options {
+        gap: 6px;
+    }
+}
+
+/* Landscape Orientation Adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+    .container {
+        padding: 5px;
+    }
+    
+    .todo-app {
+        margin: 5px auto;
+    }
+    
+    .modal-content {
+        max-height: 85vh;
+        margin: 5px auto;
+    }
+    
+    .stats-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Touch Device Improvements */
+@media (hover: none) and (pointer: coarse) {
+    .icon-btn,
+    .task-action-btn,
+    .filter-btn,
+    .category-btn,
+    .btn-primary,
+    .btn-secondary,
+    .close-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .task-checkbox {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .list-container li {
+        padding: 14px;
+    }
+}
+
+/* High DPI Screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .todo-app {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .container {
+        background: white;
+        padding: 0;
+    }
+    
+    .todo-app {
+        box-shadow: none;
+        margin: 0;
+    }
+    
+    .header-controls,
+    .input-section,
+    .filter-section,
+    .task-actions,
+    .pagination-container {
+        display: none !important;
+    }
+    
+    .list-container li {
+        page-break-inside: avoid;
     }
 }

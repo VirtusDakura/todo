@@ -52,6 +52,52 @@ function init() {
     updateStats();
     attachEventListeners();
     setMinDate();
+    initMobileOptimizations();
+}
+
+// Mobile Optimizations
+function initMobileOptimizations() {
+    // Prevent double-tap zoom on buttons
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', (e) => {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) {
+            e.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+    
+    // Add touch feedback class
+    document.addEventListener('touchstart', (e) => {
+        if (e.target.classList.contains('task-action-btn') || 
+            e.target.classList.contains('icon-btn') ||
+            e.target.classList.contains('filter-btn') ||
+            e.target.classList.contains('category-btn')) {
+            e.target.style.opacity = '0.7';
+        }
+    });
+    
+    document.addEventListener('touchend', (e) => {
+        if (e.target.classList.contains('task-action-btn') || 
+            e.target.classList.contains('icon-btn') ||
+            e.target.classList.contains('filter-btn') ||
+            e.target.classList.contains('category-btn')) {
+            setTimeout(() => {
+                e.target.style.opacity = '1';
+            }, 100);
+        }
+    });
+    
+    // Improve scroll performance
+    if ('scrollBehavior' in document.documentElement.style) {
+        document.documentElement.style.scrollBehavior = 'smooth';
+    }
+    
+    // Detect mobile/tablet
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+        document.body.classList.add('mobile-device');
+    }
 }
 
 // Event Listeners
