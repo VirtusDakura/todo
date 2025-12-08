@@ -37,6 +37,7 @@ const elements = {
 
 // Confirmation callback
 let confirmCallback = null;
+let editingCategoryId = null;
 
 // Initialize App
 function init() {
@@ -481,13 +482,37 @@ function renderCategories() {
         const btn = document.createElement('button');
         btn.className = 'category-btn';
         btn.dataset.category = category.id;
-        btn.innerHTML = `<i class="fas fa-folder" style="color: ${category.color}"></i> ${category.name}`;
-        btn.addEventListener('click', (e) => {
+        btn.innerHTML = `
+            <span class="category-content">
+                <i class="fas fa-folder" style="color: ${category.color}"></i> ${category.name}
+            </span>
+            <span class="category-actions">
+                <i class="fas fa-edit" data-action="edit" data-id="${category.id}" title="Edit project"></i>
+                <i class="fas fa-trash" data-action="delete" data-id="${category.id}" title="Delete project"></i>
+            </span>
+        `;
+        
+        // Click to filter tasks
+        btn.querySelector('.category-content').addEventListener('click', (e) => {
+            e.stopPropagation();
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
+            btn.classList.add('active');
             currentCategory = category.id;
             renderTasks();
         });
+        
+        // Edit category
+        btn.querySelector('[data-action="edit"]').addEventListener('click', (e) => {
+            e.stopPropagation();
+            openEditCategoryModal(category.id);
+        });
+        
+        // Delete category
+        btn.querySelector('[data-action="delete"]').addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteCategory(category.id);
+        });
+        
         elements.categoriesList.appendChild(btn);
     });
 
@@ -502,15 +527,77 @@ function renderCategories() {
 }
 
 function openCategoryModal() {
+    editingCategoryId = null;
+    document.getElementById('categoryModalTitle').textContent = 'New Project';
     document.getElementById('categoryNameInput').value = '';
     document.querySelectorAll('.color-option').forEach(b => b.classList.remove('selected'));
     document.querySelector('.color-option').classList.add('selected');
     selectedColor = '#ff5945';
+    document.getElementById('saveCategoryBtn').textContent = 'Create Project';
+    elements.categoryModal.classList.add('active');
+}
+
+function openEditCategoryModal(id) {
+    const category = categories.find(c => c.id === id);
+    if (!category) return;
+    
+    editingCategoryId = id;
+    document.getElementById('categoryModalTitle').textContent = 'Edit Project';
+    document.getElementById('categoryNameInput').value = category.name;
+    
+    // Select the current color
+    document.querySelectorAll('.color-option').forEach(b => {
+        b.classList.remove('selected');
+        if (b.dataset.color === category.color) {
+            b.classList.add('selected');
+        }
+    });
+    selectedColor = category.color;
+    document.getElementById('saveCategoryBtn').textContent = 'Save Changes';
     elements.categoryModal.classList.add('active');
 }
 
 function closeCategoryModal() {
     elements.categoryModal.classList.remove('active');
+    editingCategoryId = null;
+}
+
+function deleteCategory(id) {
+    const category = categories.find(c => c.id === id);
+    if (!category) return;
+    
+    const tasksInCategory = tasks.filter(t => t.category === id).length;
+    const message = tasksInCategory > 0 
+        ? `Delete "${category.name}"? This project has ${tasksInCategory} task(s). Tasks will be moved to "No Project".`
+        : `Delete "${category.name}"?`;
+    
+    showConfirmModal(
+        'Delete Project',
+        message,
+        () => {
+            // Remove category
+            categories = categories.filter(c => c.id !== id);
+            
+            // Update tasks in this category
+            tasks.forEach(task => {
+                if (task.category === id) {
+                    task.category = 'all';
+                }
+            });
+            
+            // Reset to "All Tasks" view if deleting current category
+            if (currentCategory === id) {
+                currentCategory = 'all';
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector('[data-category="all"]').classList.add('active');
+            }
+            
+            saveToLocalStorage();
+            renderCategories();
+            renderTasks();
+            showNotification('Project deleted successfully', 'success');
+        }
+    );
 }
 
 function saveCategory() {
@@ -521,17 +608,32 @@ function saveCategory() {
         return;
     }
 
-    const category = {
-        id: 'cat_' + Date.now(),
-        name: name,
-        color: selectedColor
-    };
+    if (editingCategoryId) {
+        // Edit existing category
+        const category = categories.find(c => c.id === editingCategoryId);
+        if (category) {
+            category.name = name;
+            category.color = selectedColor;
+            saveToLocalStorage();
+            renderCategories();
+            renderTasks(); // Re-render to update category display in tasks
+            closeCategoryModal();
+            showNotification('Project updated successfully', 'success');
+        }
+    } else {
+        // Create new category
+        const category = {
+            id: 'cat_' + Date.now(),
+            name: name,
+            color: selectedColor
+        };
 
-    categories.push(category);
-    saveToLocalStorage();
-    renderCategories();
-    closeCategoryModal();
-    showNotification('Project created successfully', 'success');
+        categories.push(category);
+        saveToLocalStorage();
+        renderCategories();
+        closeCategoryModal();
+        showNotification('Project created successfully', 'success');
+    }
 }
 
 // Statistics

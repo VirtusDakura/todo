@@ -217,7 +217,9 @@ body.dark-mode .container {
     transition: var(--transition);
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
+    position: relative;
 }
 
 .category-btn:hover {
@@ -229,6 +231,43 @@ body.dark-mode .container {
     background: var(--primary-color);
     color: var(--bg-white);
     border-color: var(--primary-color);
+}
+
+.category-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.category-actions {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.category-btn:hover .category-actions {
+    display: flex;
+    opacity: 1;
+}
+
+.category-actions i {
+    font-size: 12px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.category-actions i:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.2);
+}
+
+.category-btn.active .category-actions i:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .category-btn i {
