@@ -18,6 +18,7 @@ const elements = {
     listContainer: document.getElementById('listContainer'),
     prioritySelect: document.getElementById('prioritySelect'),
     dueDateInput: document.getElementById('dueDateInput'),
+    dueTimeInput: document.getElementById('dueTimeInput'),
     categorySelect: document.getElementById('categorySelect'),
     searchInput: document.getElementById('searchInput'),
     sortSelect: document.getElementById('sortSelect'),
@@ -141,6 +142,7 @@ function addTask() {
         completed: false,
         priority: elements.prioritySelect.value,
         dueDate: elements.dueDateInput.value,
+        dueTime: elements.dueTimeInput.value,
         category: elements.categorySelect.value,
         createdAt: new Date().toISOString(),
         notes: elements.taskNotesInput.value.trim()
@@ -150,6 +152,7 @@ function addTask() {
     elements.taskInput.value = '';
     elements.taskNotesInput.value = '';
     elements.dueDateInput.value = '';
+    elements.dueTimeInput.value = '';
     
     currentPage = 1;
     saveToLocalStorage();
@@ -202,7 +205,11 @@ function openDetailsModal(id) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const isOverdue = dueDate < today && !task.completed;
-        dueDateEl.innerHTML = `<span class="${isOverdue ? 'overdue-text' : ''}">${formatFullDate(task.dueDate)}</span>`;
+        let dateTimeText = formatFullDate(task.dueDate);
+        if (task.dueTime) {
+            dateTimeText = formatDateWithTime(task.dueDate, task.dueTime);
+        }
+        dueDateEl.innerHTML = `<span class="${isOverdue ? 'overdue-text' : ''}">${dateTimeText}</span>`;
     } else {
         dueDateEl.textContent = 'No due date';
         dueDateEl.style.color = 'var(--text-muted)';
@@ -265,6 +272,7 @@ function openEditModal(id) {
     document.getElementById('editTaskNotes').value = task.notes || '';
     document.getElementById('editPrioritySelect').value = task.priority;
     document.getElementById('editDueDateInput').value = task.dueDate || '';
+    document.getElementById('editDueTimeInput').value = task.dueTime || '';
     
     elements.editModal.classList.add('active');
 }
@@ -288,6 +296,7 @@ function saveEditTask() {
     task.notes = document.getElementById('editTaskNotes').value.trim();
     task.priority = document.getElementById('editPrioritySelect').value;
     task.dueDate = document.getElementById('editDueDateInput').value;
+    task.dueTime = document.getElementById('editDueTimeInput').value;
 
     saveToLocalStorage();
     renderTasks();
@@ -370,7 +379,12 @@ function createTaskElement(task) {
             dueDateSpan.classList.add('overdue');
         }
         
-        dueDateSpan.innerHTML = `<i class="fas fa-calendar"></i> ${formatDate(task.dueDate)}`;
+        let dateTimeText = formatDate(task.dueDate);
+        if (task.dueTime) {
+            dateTimeText += ` at ${task.dueTime}`;
+        }
+        
+        dueDateSpan.innerHTML = `<i class="fas fa-calendar"></i> ${dateTimeText}`;
         meta.appendChild(dueDateSpan);
     }
 
@@ -940,6 +954,17 @@ function formatFullDate(dateString) {
         minute: '2-digit'
     };
     return date.toLocaleDateString('en-US', options);
+}
+
+function formatDateWithTime(dateString, timeString) {
+    const date = new Date(dateString);
+    const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric'
+    };
+    const dateFormatted = date.toLocaleDateString('en-US', options);
+    return `${dateFormatted} at ${timeString}`;
 }
 
 function setMinDate() {

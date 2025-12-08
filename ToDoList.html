@@ -89,7 +89,10 @@
                         <option value="high">High Priority</option>
                     </select>
                     
-                    <input type="date" class="due-date-input" id="dueDateInput" aria-label="Set due date" title="Due Date">
+                    <div class="datetime-group">
+                        <input type="date" class="due-date-input" id="dueDateInput" aria-label="Set due date" title="Due Date">
+                        <input type="time" class="due-time-input" id="dueTimeInput" aria-label="Set due time" title="Due Time">
+                    </div>
                     
                     <select class="category-select" id="categorySelect" aria-label="Select project category" title="Project Category">
                         <option value="all">No Project</option>
@@ -227,7 +230,10 @@
                         <option value="medium">Medium Priority</option>
                         <option value="high">High Priority</option>
                     </select>
-                    <input type="date" class="due-date-input" id="editDueDateInput" aria-label="Set due date" title="Due Date">
+                    <div class="datetime-group">
+                        <input type="date" class="due-date-input" id="editDueDateInput" aria-label="Set due date" title="Due Date">
+                        <input type="time" class="due-time-input" id="editDueTimeInput" aria-label="Set due time" title="Due Time">
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
