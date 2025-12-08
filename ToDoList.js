@@ -710,12 +710,12 @@ function renderCategories() {
         btn.className = 'category-btn';
         btn.dataset.category = category.id;
         btn.innerHTML = `
-            <span class="category-content">
-                <i class="fas fa-folder" style="color: ${category.color}"></i> ${category.name}
+            <span class="category-content" data-id="${category.id}">
+                <i class="fas fa-folder" style="color: ${category.color}"></i>
+                <span class="category-name">${category.name}</span>
             </span>
-            <span class="category-actions">
-                <i class="fas fa-edit" data-action="edit" data-id="${category.id}" title="Edit project"></i>
-                <i class="fas fa-trash" data-action="delete" data-id="${category.id}" title="Delete project"></i>
+            <span class="category-menu-btn" data-id="${category.id}">
+                <i class="fas fa-ellipsis-v"></i>
             </span>
         `;
         
@@ -729,16 +729,10 @@ function renderCategories() {
             renderTasks();
         });
         
-        // Edit category
-        btn.querySelector('[data-action="edit"]').addEventListener('click', (e) => {
+        // Toggle menu
+        btn.querySelector('.category-menu-btn').addEventListener('click', (e) => {
             e.stopPropagation();
-            openEditCategoryModal(category.id);
-        });
-        
-        // Delete category
-        btn.querySelector('[data-action="delete"]').addEventListener('click', (e) => {
-            e.stopPropagation();
-            deleteCategory(category.id);
+            toggleCategoryMenu(category.id, btn);
         });
         
         elements.categoriesList.appendChild(btn);
@@ -829,6 +823,59 @@ function deleteCategory(id) {
             showNotification('Project deleted successfully', 'success');
         }
     );
+}
+
+function toggleCategoryMenu(categoryId, buttonElement) {
+    // Remove any existing menu
+    const existingMenu = document.querySelector('.category-dropdown-menu');
+    if (existingMenu) {
+        existingMenu.remove();
+        return;
+    }
+    
+    // Create dropdown menu
+    const menu = document.createElement('div');
+    menu.className = 'category-dropdown-menu';
+    menu.innerHTML = `
+        <button class="dropdown-item" data-action="edit">
+            <i class="fas fa-edit"></i> Edit Project
+        </button>
+        <button class="dropdown-item danger" data-action="delete">
+            <i class="fas fa-trash"></i> Delete Project
+        </button>
+    `;
+    
+    // Position menu
+    const rect = buttonElement.getBoundingClientRect();
+    menu.style.position = 'fixed';
+    menu.style.top = `${rect.bottom + 5}px`;
+    menu.style.left = `${rect.left}px`;
+    
+    // Add to body
+    document.body.appendChild(menu);
+    
+    // Event listeners
+    menu.querySelector('[data-action="edit"]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.remove();
+        openEditCategoryModal(categoryId);
+    });
+    
+    menu.querySelector('[data-action="delete"]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.remove();
+        deleteCategory(categoryId);
+    });
+    
+    // Close menu when clicking outside
+    setTimeout(() => {
+        document.addEventListener('click', function closeMenu(e) {
+            if (!menu.contains(e.target)) {
+                menu.remove();
+                document.removeEventListener('click', closeMenu);
+            }
+        });
+    }, 0);
 }
 
 function saveCategory() {
