@@ -948,6 +948,22 @@ body.dark-mode .container {
     align-items: center;
 }
 
+.filter-tabs {
+    display: flex;
+    gap: 5px;
+    background: var(--bg-light);
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.search-sort-row {
+    display: flex;
+    gap: 15px;
+    flex: 1;
+    min-width: 300px;
+    align-items: center;
+}
+
 .search-box {
     flex: 1;
     min-width: 200px;
@@ -972,7 +988,7 @@ body.dark-mode .container {
     font-size: 14px;
 }
 
-.filter-buttons {
+.filter-tabs {
     display: flex;
     gap: 5px;
     background: var(--bg-light);
@@ -2079,37 +2095,51 @@ ul li.drag-over {
     /* Filter section mobile */
     .filter-section {
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
         margin-bottom: 12px;
     }
     
-    .search-box {
+    .filter-tabs {
         width: 100%;
-        min-width: auto;
+        padding: 4px;
+        border-radius: 8px;
+        gap: 4px;
+    }
+    
+    .filter-btn {
+        flex: 1;
         padding: 8px 12px;
+        font-size: 13px;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+    
+    .search-sort-row {
+        width: 100%;
+        flex-direction: row;
+        gap: 8px;
+        min-width: 0;
+    }
+    
+    .search-box {
+        flex: 1;
+        min-width: 0;
+        padding: 8px 12px;
+        border-radius: 8px;
     }
     
     .search-box input {
         font-size: 13px;
     }
     
-    .filter-buttons {
-        width: 100%;
-        justify-content: space-between;
-        gap: 6px;
-    }
-    
-    .filter-btn {
-        flex: 1;
-        padding: 7px 10px;
-        font-size: 12px;
-    }
-    
     .sort-select {
-        width: 100%;
+        flex: 0 0 auto;
         font-size: 12px;
-        padding: 7px 10px;
-        height: 34px;
+        padding: 8px 10px;
+        height: auto;
+        width: auto;
+        min-width: 90px;
+        border-radius: 6px;
     }
     
     /* Task list mobile */
@@ -2317,14 +2347,19 @@ ul li.drag-over {
         height: 34px;
     }
     
-    .filter-buttons {
-        flex-wrap: wrap;
+    .filter-tabs {
+        padding: 4px;
     }
     
     .filter-btn {
+        font-size: 12px;
+        padding: 7px 10px;
+    }
+    
+    .sort-select {
         font-size: 11px;
-        padding: 6px 8px;
-        min-width: 60px;
+        padding: 7px 8px;
+        min-width: 80px;
     }
     
     .category-btn {

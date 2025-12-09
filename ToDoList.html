@@ -176,21 +176,23 @@
 
             <!-- Search and Filter -->
             <div class="filter-section">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search tasks...">
-                </div>
-                <div class="filter-buttons">
+                <div class="filter-tabs">
                     <button class="filter-btn active" data-filter="all">All</button>
                     <button class="filter-btn" data-filter="active">Active</button>
                     <button class="filter-btn" data-filter="completed">Completed</button>
                 </div>
-                <select class="sort-select" id="sortSelect" aria-label="Sort tasks" title="Sort Options">
-                    <option value="default">Sort by: Default</option>
-                    <option value="priority">Sort by: Priority</option>
-                    <option value="dueDate">Sort by: Due Date</option>
-                    <option value="alphabetical">Sort by: A-Z</option>
-                </select>
+                <div class="search-sort-row">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search tasks...">
+                    </div>
+                    <select class="sort-select" id="sortSelect" aria-label="Sort tasks" title="Sort Options">
+                        <option value="default">Default</option>
+                        <option value="priority">Priority</option>
+                        <option value="dueDate">Due Date</option>
+                        <option value="alphabetical">A-Z</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Task List -->
