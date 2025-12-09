@@ -779,6 +779,20 @@ body.dark-mode .container {
     margin-bottom: 15px;
 }
 
+.task-options-wrapper {
+    max-height: 1000px;
+    opacity: 1;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.task-options-wrapper.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-bottom: 0;
+}
+
 .input-box {
     flex: 1;
     border: none;
@@ -1987,47 +2001,73 @@ ul li.drag-over {
     }
     
     .row {
-        gap: 6px;
+        gap: 4px;
+        padding: 4px 4px 4px 12px;
+        border-radius: 25px;
     }
     
     #taskInput {
         font-size: 13px;
-        padding: 9px 12px;
-        height: 38px;
+        padding: 8px 10px;
+        height: auto;
     }
     
     .add-btn {
-        padding: 9px;
-        font-size: 0;
-        width: 38px;
-        height: 38px;
-        min-width: 38px;
+        padding: 10px 16px;
+        font-size: 13px;
+        width: auto;
+        height: auto;
+        min-width: auto;
+        border-radius: 20px;
     }
     
     .add-btn i {
-        font-size: 16px;
+        font-size: 14px;
         margin: 0;
+    }
+    
+    .add-btn-text {
+        display: inline;
+    }
+    
+    .task-options-wrapper {
+        margin-bottom: 10px;
+    }
+    
+    .task-options-wrapper.collapsed {
+        display: none;
+    }
+    
+    .task-notes-container {
+        margin-bottom: 10px;
     }
     
     #taskNotesInput {
         font-size: 12px;
         padding: 8px 10px;
         min-height: 50px;
+        border-radius: 8px;
     }
     
     .task-options {
         gap: 6px;
+        flex-direction: column;
     }
     
     .priority-select,
     .category-select {
         font-size: 12px;
-        padding: 7px 10px;
-        height: 34px;
+        padding: 8px 10px;
+        height: 36px;
+        width: 100%;
+        flex: 1;
+        min-width: 0;
     }
     
     .datetime-group {
         gap: 6px;
+        width: 100%;
+        flex: 1;
     }
     
     .datetime-group input {
@@ -2246,8 +2286,27 @@ ul li.drag-over {
         padding: 12px;
     }
     
+    /* Add task section for small screens */
+    .row {
+        padding: 4px 4px 4px 10px;
+    }
+    
+    #taskInput {
+        font-size: 12px;
+        padding: 8px;
+    }
+    
+    .add-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    .add-btn i {
+        font-size: 13px;
+    }
+    
     .task-options {
-        gap: 8px;
+        gap: 6px;
     }
     
     .priority-select,
@@ -2255,6 +2314,7 @@ ul li.drag-over {
     .datetime-group input {
         font-size: 12px;
         padding: 7px;
+        height: 34px;
     }
     
     .filter-buttons {

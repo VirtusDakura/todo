@@ -143,30 +143,34 @@
                     <input type="text" class="input-box" id="taskInput" placeholder="Add a task...">
                     <button class="add-btn" id="addTaskBtn" title="Add Task">
                         <i class="fas fa-plus"></i>
+                        <span class="add-btn-text">Add</span>
                     </button>
                 </div>
                 
-                <!-- Task Notes -->
-                <div class="task-notes-container">
-                    <textarea class="task-notes-input" id="taskNotesInput" placeholder="Notes (optional)" rows="2"></textarea>
-                </div>
-                
-                <!-- Task Options -->
-                <div class="task-options">
-                    <select class="priority-select" id="prioritySelect" aria-label="Select task priority" title="Task Priority">
-                        <option value="low">Low Priority</option>
-                        <option value="medium" selected>Medium Priority</option>
-                        <option value="high">High Priority</option>
-                    </select>
-                    
-                    <div class="datetime-group">
-                        <input type="date" class="due-date-input" id="dueDateInput" aria-label="Set due date" title="Due Date">
-                        <input type="time" class="due-time-input" id="dueTimeInput" aria-label="Set due time" title="Due Time">
+                <!-- Collapsible Task Options -->
+                <div class="task-options-wrapper" id="taskOptionsWrapper">
+                    <!-- Task Notes -->
+                    <div class="task-notes-container">
+                        <textarea class="task-notes-input" id="taskNotesInput" placeholder="Notes (optional)" rows="2"></textarea>
                     </div>
                     
-                    <select class="category-select" id="categorySelect" aria-label="Select project category" title="Project Category">
-                        <option value="all">No Project</option>
-                    </select>
+                    <!-- Task Options -->
+                    <div class="task-options">
+                        <select class="priority-select" id="prioritySelect" aria-label="Select task priority" title="Task Priority">
+                            <option value="low">Low Priority</option>
+                            <option value="medium" selected>Medium Priority</option>
+                            <option value="high">High Priority</option>
+                        </select>
+                        
+                        <div class="datetime-group">
+                            <input type="date" class="due-date-input" id="dueDateInput" aria-label="Set due date" title="Due Date">
+                            <input type="time" class="due-time-input" id="dueTimeInput" aria-label="Set due time" title="Due Time">
+                        </div>
+                        
+                        <select class="category-select" id="categorySelect" aria-label="Select project category" title="Project Category">
+                            <option value="all">No Project</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 

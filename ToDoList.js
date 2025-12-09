@@ -58,6 +58,14 @@ function init() {
 
 // Mobile Optimizations
 function initMobileOptimizations() {
+    // Collapse task options on mobile by default
+    if (window.innerWidth <= 768) {
+        const taskOptionsWrapper = document.getElementById('taskOptionsWrapper');
+        if (taskOptionsWrapper) {
+            taskOptionsWrapper.classList.add('collapsed');
+        }
+    }
+    
     // Prevent double-tap zoom on buttons
     let lastTouchEnd = 0;
     document.addEventListener('touchend', (e) => {
@@ -108,6 +116,26 @@ function attachEventListeners() {
     elements.taskInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') addTask();
     });
+    
+    // Auto-expand/collapse task options on mobile
+    const taskOptionsWrapper = document.getElementById('taskOptionsWrapper');
+    const addTaskSection = document.querySelector('.add-task-section');
+    
+    if (taskOptionsWrapper && elements.taskInput) {
+        // Expand when user focuses on input
+        elements.taskInput.addEventListener('focus', () => {
+            if (window.innerWidth <= 768) {
+                taskOptionsWrapper.classList.remove('collapsed');
+            }
+        });
+        
+        // Collapse when clicking outside the add task section
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && addTaskSection && !addTaskSection.contains(e.target)) {
+                taskOptionsWrapper.classList.add('collapsed');
+            }
+        });
+    }
 
     // Search
     elements.searchInput.addEventListener('input', () => {
@@ -306,6 +334,12 @@ function addTask() {
     elements.taskNotesInput.value = '';
     elements.dueDateInput.value = '';
     elements.dueTimeInput.value = '';
+    
+    // Collapse task options on mobile after adding
+    const taskOptionsWrapper = document.getElementById('taskOptionsWrapper');
+    if (taskOptionsWrapper && window.innerWidth <= 768) {
+        taskOptionsWrapper.classList.add('collapsed');
+    }
     
     currentPage = 1;
     saveToLocalStorage();
