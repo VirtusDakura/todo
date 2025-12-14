@@ -203,8 +203,4 @@ Built with ❤️ using vanilla JavaScript - no frameworks, no dependencies, pur
 
 ---
 
-**Version**: 2.0  
-**Last Updated**: December 2025  
-**Status**: Active Development
-
 For questions or feedback, please open an issue in the repository.
